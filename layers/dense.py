@@ -4,7 +4,7 @@ from ops.activations import *
 
 class Dense(Layer):
     def __init__(self, n_in, n_out, activation='sigmoid'):
-        self.weight = np.random.rand(n_in, n_out)
+        self.weight = np.random.rand(n_in, n_out) * 0.01
         self.activation = None
         self.activation_derivative = None
         if activation == 'sigmoid':

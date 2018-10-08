@@ -28,19 +28,19 @@ class NeuralNetwork:
 
         return delta_weights
 
-    def __do_one_epoch(self, x, y):
+    def do_one_epoch(self, x, y):
         outputs = self.do_forward(x)
-        delta_weights = self.do_backward(y, outputs)
-        self.__update_params(delta_weights)
+        delta_weights = self.do_backward(y)
+        self.update_params(delta_weights)
 
-    def __update_params(self, delta_weights):
+    def update_params(self, delta_weights):
         assert len(delta_weights) == len(self.model)
         for i in range(len(self.model)):
             self.model[i].weight += delta_weights[i]
 
     def fit(self, X, y, n_epochs):
         for epoch in range(n_epochs):
-            self.__do_one_epoch(X, y)
+            self.do_one_epoch(X, y)
 
     def predict(self, X):
         inputs = X

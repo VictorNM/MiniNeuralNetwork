@@ -16,7 +16,7 @@ def prepare_datasets():
 
 
 def main():
-    np.random.seed(1)
+    np.random.seed(3)
 
     X_train, X_test, y_train, y_test = prepare_datasets()
     mlp = MLPClassifier((7,3), activation="logistic", solver="lbfgs", batch_size=len(X_train), max_iter=10000)
@@ -33,7 +33,7 @@ def main():
 
     nn = NeuralNetwork(model)
     one_hot_targets = np.eye(3)[y_train]
-    nn.fit(X_train, one_hot_targets, 10000)
+    nn.fit(X_train, one_hot_targets, 20000)
 
     my_pred = nn.predict(X_test)
     print("My accuracy score:", accuracy_score(y_test, my_pred))
