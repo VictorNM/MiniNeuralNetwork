@@ -7,7 +7,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.neural_network import MLPClassifier
 
 from layers.dense import Dense
-from neural_network.nn import NeuralNetwork
+from engines.model import Model
 
 
 def prepare_datasets():
@@ -26,17 +26,17 @@ def main():
     pred = mlp.predict(X_test)
     print("Accuracy score:", accuracy_score(y_test, pred))
 
-    model = [
+    layers = [
         Dense(4, 7, 'sigmoid'),
         Dense(7, 7, 'sigmoid'),
         Dense(7, 3, 'sigmoid')
     ]
 
-    nn = NeuralNetwork(model)
+    model = Model(layers)
     one_hot_targets = np.eye(3)[y_train]
-    nn.fit(X_train, one_hot_targets, n_epochs=20000, learning_rate=0.02)
+    model.fit(X_train, one_hot_targets, n_epochs=20000, learning_rate=0.02)
 
-    my_pred = nn.predict(X_test)
+    my_pred = model.predict(X_test)
     print("My accuracy score:", accuracy_score(y_test, my_pred))
 
 if __name__ == '__main__':

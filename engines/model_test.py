@@ -1,6 +1,6 @@
 import unittest
 from layers.dense import Dense
-from neural_network.nn import NeuralNetwork
+from engines.model import Model
 from ops.activations import *
 
 
@@ -28,12 +28,12 @@ class MyTestCase(unittest.TestCase):
         layer.cache = x
         layer.weight = w
         layer.outputs = y_hat
-        model = [
+        layers = [
             layer
         ]
 
-        nn = NeuralNetwork(model)
-        actual = nn.do_backward(y)
+        model = Model(layers)
+        actual = model.do_backward(y)
         expected = np.array([[
             [1.960e-04, -4.500e-03],
             [7.840e-05, -1.800e-03],
@@ -70,14 +70,14 @@ class MyTestCase(unittest.TestCase):
         ])
 
         # define network
-        model = [layer_1, layer_2]
-        nn = NeuralNetwork(model)
+        layers = [layer_1, layer_2]
+        model = Model(layers)
 
         y = np.array([
             [1, 0]
         ])
 
-        actual = nn.do_backward(y)
+        actual = model.do_backward(y)
         expected = [
             np.array([
                 [-0.00530592, - 0.00156708],
@@ -141,9 +141,9 @@ class MyTestCase(unittest.TestCase):
 
 
         # define network
-        model = [layer_1, layer_2, layer_3]
-        nn = NeuralNetwork(model)
-        actual = nn.do_backward(y)
+        layers = [layer_1, layer_2, layer_3]
+        model = Model(layers)
+        actual = model.do_backward(y)
         expected = [
             np.array([
                 [0.35145792, 0.10788228, 0.],
