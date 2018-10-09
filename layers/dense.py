@@ -24,13 +24,13 @@ class Dense(Layer):
             self.outputs = self.activation(linear_output)
         return self.outputs
 
-    def backward(self, delta_o2):
+    def backward(self, delta_y):
         if self.activation_derivative is not None:
-            delta_o1 = delta_o2 * self.activation_derivative(self.outputs)
+            e = delta_y * self.activation_derivative(self.outputs)
         else:
-            delta_o1 = delta_o2
+            e = delta_y
 
-        delta_weight = K.dot(self.cache.T, delta_o1)
-        delta_bias = K.ones(len(delta_o2)).dot(delta_o1)
+        delta_weight = K.dot(self.cache.T, e)
+        delta_bias = K.ones(len(delta_y)).dot(e)
 
-        return delta_o1, delta_weight, delta_bias
+        return e, delta_weight, delta_bias

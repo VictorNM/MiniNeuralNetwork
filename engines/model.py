@@ -22,9 +22,9 @@ class Model:
             if i == len(self.layers) - 1:
                 delta_y = layer.outputs - y
             else:
-                delta_y = K.dot(delta_o1, self.layers[i + 1].weight.T)
+                delta_y = K.dot(e, self.layers[i + 1].weight.T)
 
-            delta_o1, delta_weight, delta_bias = layer.backward(delta_y)
+            e, delta_weight, delta_bias = layer.backward(delta_y)
             delta_weights.insert(0, delta_weight)
             delta_biases.insert(0, delta_bias)
 

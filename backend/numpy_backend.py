@@ -9,6 +9,10 @@ def ones(shape):
     return np.ones(shape)
 
 
+def sum(x, axis=-1):
+    return np.sum(x, axis, keepdims=True)
+
+
 def dot(x, y):
     return np.dot(x, y)
 
