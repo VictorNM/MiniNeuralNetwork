@@ -20,7 +20,7 @@ class Model:
         for i in reversed(range(len(self.layers))):
             layer = self.layers[i]
             if i == len(self.layers) - 1:
-                delta_y = y - layer.outputs
+                delta_y = layer.outputs - y
             else:
                 delta_y = K.dot(delta_o1, self.layers[i + 1].weight.T)
 
@@ -38,8 +38,8 @@ class Model:
     def update_params(self, delta_weights, delta_biases, learning_rate):
         assert len(delta_weights) == len(self.layers)
         for i in range(len(self.layers)):
-            self.layers[i].weight += delta_weights[i] * learning_rate
-            self.layers[i].bias += delta_biases[i] * learning_rate
+            self.layers[i].weight -= delta_weights[i] * learning_rate
+            self.layers[i].bias -= delta_biases[i] * learning_rate
 
     def fit(self, X, y, n_epochs=2000, learning_rate=0.001):
         for epoch in range(n_epochs):
