@@ -1,11 +1,11 @@
-from layers.base import *
+from layers import *
 from ops import activations
 
 
 class Dense(Layer):
     def __init__(self, n_in, n_out, activation=None):
-        self.weight = np.random.rand(n_in, n_out) * 0.01
-        self.bias = np.zeros((1, n_out))
+        self.weight = K.random(n_in, n_out)
+        self.bias = K.zeros((1, n_out))
 
         self.activation = None
         self.activation_derivative = None
@@ -17,7 +17,7 @@ class Dense(Layer):
 
     def forward(self, x):
         self.cache = x
-        linear_output = np.dot(x, self.weight) + self.bias
+        linear_output = K.dot(x, self.weight) + self.bias
         if self.activation is None:
             self.outputs = linear_output
         else:
@@ -30,7 +30,7 @@ class Dense(Layer):
         else:
             delta_o1 = delta_o2
 
-        delta_weight = np.dot(self.cache.T, delta_o1)
-        delta_bias = np.ones(len(delta_o2)).dot(delta_o1)
+        delta_weight = K.dot(self.cache.T, delta_o1)
+        delta_bias = K.ones(len(delta_o2)).dot(delta_o1)
 
         return delta_o1, delta_weight, delta_bias

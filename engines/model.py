@@ -1,4 +1,4 @@
-import numpy as np
+import backend as K
 
 
 class Model:
@@ -22,7 +22,7 @@ class Model:
             if i == len(self.layers) - 1:
                 delta_y = y - layer.outputs
             else:
-                delta_y = np.dot(delta_o1, self.layers[i + 1].weight.T)
+                delta_y = K.dot(delta_o1, self.layers[i + 1].weight.T)
 
             delta_o1, delta_weight, delta_bias = layer.backward(delta_y)
             delta_weights.insert(0, delta_weight)
@@ -51,4 +51,4 @@ class Model:
             layer = self.layers[i]
             inputs = layer.forward(inputs)
 
-        return np.argmax(inputs, axis=1)
+        return K.argmax(inputs, axis=1)

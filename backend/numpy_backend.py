@@ -1,6 +1,14 @@
 import numpy as np
 
 
+def zeros(shape):
+    return np.zeros(shape)
+
+
+def ones(shape):
+    return np.ones(shape)
+
+
 def dot(x, y):
     return np.dot(x, y)
 
@@ -19,6 +27,10 @@ def abs(x):
 
 def exp(x):
     return np.exp(x)
+
+
+def random(x, y):
+    return np.random.rand(x, y)
 
 
 def sigmoid(x):
