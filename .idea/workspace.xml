@@ -2,11 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="45c85c58-66f6-4373-b3f1-2bb1056a6eae" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/backend/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/numpy_backend.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engines/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/engines/model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/layers/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/layers/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/layers/dense.py" beforeDir="false" afterPath="$PROJECT_DIR$/layers/dense.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/neural_network/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/engines/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/neural_network/nn.py" beforeDir="false" afterPath="$PROJECT_DIR$/engines/model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/neural_network/nn_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/engines/model_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ops/activations.py" beforeDir="false" afterPath="$PROJECT_DIR$/ops/activations.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -21,6 +24,7 @@
     <SUITE FILE_PATH="coverage/NeuralNetwork$Unittests_for_model_test_MyTestCase_test_backward_one_layer.coverage" NAME="Unittests for model_test.MyTestCase.test_backward_one_layer Coverage Results" MODIFIED="1539016296503" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/engines" />
     <SUITE FILE_PATH="coverage/NeuralNetwork$Unittests_for_neural_network_test_MyTestCase_test_backward_one_layer.coverage" NAME="Unittests for neural_network_test.MyTestCase.test_backward_one_layer Coverage Results" MODIFIED="1538992189700" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/neural_network" />
     <SUITE FILE_PATH="coverage/NeuralNetwork$Unittests_for_dense_test_MyTestCase_test_forward.coverage" NAME="Unittests for dense_test.MyTestCase.test_forward Coverage Results" MODIFIED="1538987669503" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/layers" />
+    <SUITE FILE_PATH="coverage/NeuralNetwork$Unittests_in_model_test_py.coverage" NAME="Unittests in model_test.py Coverage Results" MODIFIED="1539055960208" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/engines" />
     <SUITE FILE_PATH="coverage/NeuralNetwork$Unittests_for_dense_test_MyTestCase_test_something.coverage" NAME="Unittests for dense_test.MyTestCase.test_something Coverage Results" MODIFIED="1538987397073" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/layers" />
     <SUITE FILE_PATH="coverage/NeuralNetwork$Unittests_for_neural_network_test_MyTestCase.coverage" NAME="Unittests for neural_network_test.MyTestCase Coverage Results" MODIFIED="1538994879661" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/neural_network" />
     <SUITE FILE_PATH="coverage/NeuralNetwork$Unittests_for_neural_network_test_MyTestCase_test_backward_three_layers.coverage" NAME="Unittests for neural_network_test.MyTestCase.test_backward_three_layers Coverage Results" MODIFIED="1539004165680" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/neural_network" />
@@ -29,37 +33,40 @@
     <session id="-1791123878">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="1" />
+          <entry key="project.closed" value="3" />
           <entry key="project.open.time.1" value="1" />
+          <entry key="project.open.time.3" value="1" />
           <entry key="project.open.time.45" value="1" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.open.time.48" value="1" />
+          <entry key="project.opened" value="4" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="gitignore" value="1" />
           <entry key="pstat" value="1" />
-          <entry key="py" value="13" />
+          <entry key="py" value="20" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="PLAIN_TEXT" value="1" />
           <entry key="Profiler Session" value="1" />
-          <entry key="Python" value="13" />
+          <entry key="Python" value="20" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="Python Console" value="24" />
           <entry key="dummy" value="41" />
-          <entry key="py" value="4768" />
+          <entry key="py" value="6642" />
+          <entry key="txt" value="35" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="PLAIN_TEXT" value="41" />
-          <entry key="Python" value="4792" />
+          <entry key="PLAIN_TEXT" value="76" />
+          <entry key="Python" value="6666" />
         </counts>
       </usages-collector>
     </session>
@@ -72,49 +79,77 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="247">
-              <caret line="34" column="9" selection-start-line="34" selection-start-column="9" selection-end-line="34" selection-end-column="9" />
+            <state relative-caret-position="95">
+              <caret line="16" column="23" lean-forward="true" selection-start-line="16" selection-start-column="23" selection-end-line="16" selection-end-column="23" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
-                <marker date="1539016203224" expanded="true" signature="439:442" ph="..." />
+                <marker date="1539076113630" expanded="true" signature="554:1886" ph="..." />
+                <marker date="1539076113630" expanded="true" signature="1524:1886" ph="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/layers/base.py">
+        <entry file="file://$PROJECT_DIR$/backend/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
             <state>
-              <caret column="18" selection-start-column="18" selection-end-column="18" />
-              <folding>
-                <marker date="1538973005964" expanded="true" signature="32:37" ph="..." />
-              </folding>
+              <caret column="35" lean-forward="true" selection-start-column="35" selection-end-column="35" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ops/activations.py">
+        <entry file="file://$PROJECT_DIR$/backend/numpy_backend.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="152">
-              <caret line="8" selection-start-line="8" selection-end-line="8" />
+            <state relative-caret-position="180">
+              <caret line="27" column="22" selection-start-line="27" selection-start-column="4" selection-end-line="27" selection-end-column="22" />
               <folding>
-                <marker date="1538973229372" expanded="true" signature="36:41" ph="..." />
+                <marker date="1539080257879" expanded="true" signature="18:62" ph="..." />
+                <marker date="1539080257879" expanded="true" signature="85:90" ph="..." />
+                <marker date="1539080257879" expanded="true" signature="132:137" ph="..." />
+                <marker date="1539080257879" expanded="true" signature="170:175" ph="..." />
+                <marker date="1539080257879" expanded="true" signature="205:210" ph="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/ops/activations.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="285">
+              <caret line="24" column="30" selection-start-line="24" selection-start-column="30" selection-end-line="24" selection-end-column="30" />
+              <folding>
+                <marker date="1539080360172" expanded="true" signature="37:42" ph="..." />
+                <marker date="1539080360172" expanded="true" signature="140:145" ph="..." />
+                <marker date="1539080360172" expanded="true" signature="187:192" ph="..." />
+                <marker date="1539080360172" expanded="true" signature="234:239" ph="..." />
+                <marker date="1539080360172" expanded="true" signature="281:286" ph="..." />
+                <marker date="1539080360172" expanded="true" signature="328:333" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/layers/dense.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="228">
-              <caret line="12" lean-forward="true" selection-start-line="12" selection-end-line="12" />
+            <state relative-caret-position="19">
+              <caret line="1" column="27" lean-forward="true" selection-start-line="1" selection-start-column="27" selection-end-line="1" selection-end-column="27" />
               <folding>
                 <element signature="e#0#25#0" expanded="true" />
-                <marker date="1539004944540" expanded="true" signature="77:82" ph="..." />
+                <marker date="1539071407033" expanded="true" signature="75:80" ph="..." />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/layers/__init__.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret column="30" lean-forward="true" selection-start-column="30" selection-end-column="30" />
             </state>
           </provider>
         </entry>
@@ -122,12 +157,12 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/engines/model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="17" column="30" lean-forward="true" selection-start-line="17" selection-start-column="30" selection-end-line="17" selection-end-column="30" />
+            <state relative-caret-position="76">
+              <caret line="4" column="31" lean-forward="true" selection-start-line="4" selection-start-column="31" selection-end-line="4" selection-end-column="31" />
               <folding>
-                <marker date="1539016161056" expanded="true" signature="33:38" ph="..." />
-                <marker date="1539016161056" expanded="true" signature="348:776" ph="..." />
-                <marker date="1539016161056" expanded="true" signature="820:964" ph="..." />
+                <marker date="1539071710069" expanded="true" signature="33:38" ph="..." />
+                <marker date="1539071710069" expanded="true" signature="348:893" ph="..." />
+                <marker date="1539071710069" expanded="true" signature="937:1109" ph="..." />
               </folding>
             </state>
           </provider>
@@ -150,7 +185,7 @@
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="285">
-              <caret line="15" column="6" lean-forward="true" selection-start-line="15" selection-start-column="6" selection-end-line="15" selection-end-column="6" />
+              <caret line="15" column="6" selection-start-line="15" selection-start-column="6" selection-end-line="15" selection-end-column="6" />
             </state>
           </provider>
         </entry>
@@ -158,7 +193,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/layers/dense_test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="334">
+            <state relative-caret-position="342">
               <caret line="21" column="55" selection-start-line="21" selection-start-column="55" selection-end-line="21" selection-end-column="55" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
@@ -172,8 +207,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="Python Unit Test" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -184,17 +219,20 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/layers/base.py" />
-        <option value="$PROJECT_DIR$/ops/activations.py" />
         <option value="$PROJECT_DIR$/layers/layers.py" />
         <option value="$PROJECT_DIR$/layers/dense_test.py" />
         <option value="$PROJECT_DIR$/neural_network/neural_network.py" />
         <option value="$PROJECT_DIR$/neural_network/neural_network_test.py" />
         <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/layers/dense.py" />
         <option value="$PROJECT_DIR$/neural_network/nn.py" />
-        <option value="$PROJECT_DIR$/engines/model.py" />
-        <option value="$PROJECT_DIR$/main.py" />
         <option value="$PROJECT_DIR$/engines/model_test.py" />
+        <option value="$PROJECT_DIR$/layers/dense.py" />
+        <option value="$PROJECT_DIR$/engines/model.py" />
+        <option value="$PROJECT_DIR$/layers/__init__.py" />
+        <option value="$PROJECT_DIR$/main.py" />
+        <option value="$PROJECT_DIR$/backend/__init__.py" />
+        <option value="$PROJECT_DIR$/backend/numpy_backend.py" />
+        <option value="$PROJECT_DIR$/ops/activations.py" />
       </list>
     </option>
   </component>
@@ -215,12 +253,18 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
               <item name="NeuralNetwork" type="b2602c69:ProjectViewProjectNode" />
               <item name="NeuralNetwork" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NeuralNetwork" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NeuralNetwork" type="462c0819:PsiDirectoryNode" />
+              <item name="backend" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="NeuralNetwork" type="b2602c69:ProjectViewProjectNode" />
@@ -245,7 +289,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -267,7 +310,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python tests.Unittests for model_test.MyTestCase.test_backward_one_layer">
+  <component name="RunManager" selected="Python tests.Unittests in model_test.py">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="NeuralNetwork" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -302,21 +345,6 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;engines.model_test.MyTestCase&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Unittests for engines.model_test.MyTestCase.test_backward_one_layer" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
-      <module name="NeuralNetwork" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/engines" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;engines.model_test.MyTestCase.test_backward_one_layer&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
@@ -365,20 +393,35 @@
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
+    <configuration name="Unittests in model_test.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+      <module name="NeuralNetwork" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/engines" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/engines/model_test.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
     <list>
-      <item itemvalue="Python tests.Unittests for engines.model_test.MyTestCase.test_backward_one_layer" />
       <item itemvalue="Python tests.Unittests for engines.model_test.MyTestCase.test_backward_two_layer" />
       <item itemvalue="Python tests.Unittests for engines.model_test.MyTestCase" />
       <item itemvalue="Python tests.Unittests for engines.model_test.MyTestCase.test_backward_three_layers" />
       <item itemvalue="Python tests.Unittests for model_test.MyTestCase.test_backward_one_layer" />
+      <item itemvalue="Python tests.Unittests in model_test.py" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.Unittests in model_test.py" />
         <item itemvalue="Python tests.Unittests for model_test.MyTestCase.test_backward_one_layer" />
         <item itemvalue="Python tests.Unittests for engines.model_test.MyTestCase.test_backward_three_layers" />
         <item itemvalue="Python tests.Unittests for engines.model_test.MyTestCase.test_backward_two_layer" />
         <item itemvalue="Python tests.Unittests for engines.model_test.MyTestCase" />
-        <item itemvalue="Python tests.Unittests for engines.model_test.MyTestCase.test_backward_one_layer" />
       </list>
     </recent_temporary>
   </component>
@@ -393,12 +436,17 @@
       <option name="presentableId" value="Default" />
       <updated>1538971453791</updated>
     </task>
+    <task id="LOCAL-00001" summary="refacter neural_network -&gt; model">
+      <created>1539017690968</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1539017690968</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Unittests_for_neural_network_test_MyTestCase_test_backward_two_layer - 2018.10.08 at 17h 34m 52s.xml">
-      <configuration name="Unittests for neural_network_test.MyTestCase.test_backward_two_layer" configurationId="tests" />
-    </history-entry>
     <history-entry file="Unittests_for_neural_network_test_MyTestCase_test_backward_two_layer - 2018.10.08 at 17h 35m 50s.xml">
       <configuration name="Unittests for neural_network_test.MyTestCase.test_backward_two_layer" configurationId="tests" />
     </history-entry>
@@ -426,6 +474,9 @@
     <history-entry file="Unittests_for_model_test_MyTestCase_test_backward_one_layer - 2018.10.08 at 23h 31m 36s.xml">
       <configuration name="Unittests for model_test.MyTestCase.test_backward_one_layer" configurationId="tests" />
     </history-entry>
+    <history-entry file="Unittests_in_model_test_py - 2018.10.09 at 10h 32m 40s.xml">
+      <configuration name="Unittests in model_test.py" configurationId="tests" />
+    </history-entry>
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -440,12 +491,12 @@
     <frame x="0" y="25" width="1920" height="990" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4982699" visible="true" weight="0.2524013" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4982699" visible="true" weight="0.25773746" />
       <window_info id="Structure" order="1" sideWeight="0.5017301" side_tool="true" weight="0.2497332" />
-      <window_info id="Favorites" order="2" sideWeight="0.5017301" side_tool="true" weight="0.2497332" />
+      <window_info id="Favorites" order="2" sideWeight="0.5017301" weight="0.2497332" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32906976" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32790697" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32790697" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39907193" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -454,13 +505,13 @@
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.32906976" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50053364" side_tool="true" weight="0.32946634" />
-      <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.4994664" weight="0.32906976" />
+      <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.4994664" visible="true" weight="0.32906976" />
       <window_info anchor="bottom" id="Python Console" order="12" weight="0.32946634" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="SciView" order="3" />
-      <window_info anchor="right" x="0" y="0" width="430" height="790" id="Documentation" order="4" side_tool="true" visible="true" weight="0.32977587" />
+      <window_info anchor="right" x="0" y="0" width="430" height="790" id="Documentation" order="4" side_tool="true" weight="0.32977587" />
       <window_info anchor="right" id="Database" order="5" />
       <window_info anchor="right" id="Coverage" order="6" side_tool="true" />
     </layout>
@@ -471,10 +522,11 @@
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="refacter neural_network -&gt; model" />
+    <option name="LAST_COMMIT_MESSAGE" value="refacter neural_network -&gt; model" />
+  </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/layers/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$USER_HOME$/.local/lib/python3.6/site-packages/sklearn/model_selection/_split.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="182">
@@ -482,35 +534,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/layers/layers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="6" selection-start-column="6" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/layers/layers.py" />
     <entry file="file:///usr/lib/python3.6/unittest/loader.py">
       <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/layers/dense_test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="334">
-          <caret line="21" column="55" selection-start-line="21" selection-start-column="55" selection-end-line="21" selection-end-column="55" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ops/activations.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="8" selection-start-line="8" selection-end-line="8" />
-          <folding>
-            <marker date="1538973229372" expanded="true" signature="36:41" ph="..." />
-          </folding>
-        </state>
-      </provider>
     </entry>
     <entry file="file://$USER_HOME$/.local/lib/python3.6/site-packages/numpy/testing/_private/utils.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -519,32 +545,50 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
+    <entry file="file://$USER_HOME$/.PyCharm2018.2/system/python_stubs/-1247971763/numpy/core/umath.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="15" column="6" lean-forward="true" selection-start-line="15" selection-start-column="6" selection-end-line="15" selection-end-column="6" />
+        <state relative-caret-position="372">
+          <caret line="3528" column="18" selection-start-line="3528" selection-start-column="16" selection-end-line="3528" selection-end-column="18" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/engines/model.py">
+    <entry file="file://$USER_HOME$/.local/lib/python3.6/site-packages/keras/engine/training_utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="17" column="30" lean-forward="true" selection-start-line="17" selection-start-column="30" selection-end-line="17" selection-end-column="30" />
+        <state relative-caret-position="467">
+          <caret line="137" selection-start-line="137" selection-end-line="137" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.local/lib/python3.6/site-packages/keras/engine/training.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-502">
+          <caret line="824" column="8" selection-start-line="824" selection-start-column="8" selection-end-line="824" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/layers/base.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="18" selection-start-column="18" selection-end-column="18" />
           <folding>
-            <marker date="1539016161056" expanded="true" signature="33:38" ph="..." />
-            <marker date="1539016161056" expanded="true" signature="348:776" ph="..." />
-            <marker date="1539016161056" expanded="true" signature="820:964" ph="..." />
+            <marker date="1538973005964" expanded="true" signature="32:37" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
+    <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="34" column="9" selection-start-line="34" selection-start-column="9" selection-end-line="34" selection-end-column="9" />
+        <state relative-caret-position="285">
+          <caret line="15" column="6" selection-start-line="15" selection-start-column="6" selection-end-line="15" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/layers/dense_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="342">
+          <caret line="21" column="55" selection-start-line="21" selection-start-column="55" selection-end-line="21" selection-end-column="55" />
           <folding>
-            <element signature="e#0#18#0" expanded="true" />
-            <marker date="1539016203224" expanded="true" signature="439:442" ph="..." />
+            <element signature="e#0#15#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -560,23 +604,80 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/layers/base.py">
+    <entry file="file://$PROJECT_DIR$/layers/dense.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="18" selection-start-column="18" selection-end-column="18" />
+        <state relative-caret-position="19">
+          <caret line="1" column="27" lean-forward="true" selection-start-line="1" selection-start-column="27" selection-end-line="1" selection-end-column="27" />
           <folding>
-            <marker date="1538973005964" expanded="true" signature="32:37" ph="..." />
+            <element signature="e#0#25#0" expanded="true" />
+            <marker date="1539071407033" expanded="true" signature="75:80" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/layers/dense.py">
+    <entry file="file://$PROJECT_DIR$/engines/model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
-          <caret line="12" lean-forward="true" selection-start-line="12" selection-end-line="12" />
+        <state relative-caret-position="76">
+          <caret line="4" column="31" lean-forward="true" selection-start-line="4" selection-start-column="31" selection-end-line="4" selection-end-column="31" />
           <folding>
-            <element signature="e#0#25#0" expanded="true" />
-            <marker date="1539004944540" expanded="true" signature="77:82" ph="..." />
+            <marker date="1539071710069" expanded="true" signature="33:38" ph="..." />
+            <marker date="1539071710069" expanded="true" signature="348:893" ph="..." />
+            <marker date="1539071710069" expanded="true" signature="937:1109" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/layers/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="30" lean-forward="true" selection-start-column="30" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="16" column="23" lean-forward="true" selection-start-line="16" selection-start-column="23" selection-end-line="16" selection-end-column="23" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+            <marker date="1539076113630" expanded="true" signature="554:1886" ph="..." />
+            <marker date="1539076113630" expanded="true" signature="1524:1886" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="35" lean-forward="true" selection-start-column="35" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/numpy_backend.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="27" column="22" selection-start-line="27" selection-start-column="4" selection-end-line="27" selection-end-column="22" />
+          <folding>
+            <marker date="1539080257879" expanded="true" signature="18:62" ph="..." />
+            <marker date="1539080257879" expanded="true" signature="85:90" ph="..." />
+            <marker date="1539080257879" expanded="true" signature="132:137" ph="..." />
+            <marker date="1539080257879" expanded="true" signature="170:175" ph="..." />
+            <marker date="1539080257879" expanded="true" signature="205:210" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ops/activations.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="24" column="30" selection-start-line="24" selection-start-column="30" selection-end-line="24" selection-end-column="30" />
+          <folding>
+            <marker date="1539080360172" expanded="true" signature="37:42" ph="..." />
+            <marker date="1539080360172" expanded="true" signature="140:145" ph="..." />
+            <marker date="1539080360172" expanded="true" signature="187:192" ph="..." />
+            <marker date="1539080360172" expanded="true" signature="234:239" ph="..." />
+            <marker date="1539080360172" expanded="true" signature="281:286" ph="..." />
+            <marker date="1539080360172" expanded="true" signature="328:333" ph="..." />
           </folding>
         </state>
       </provider>
