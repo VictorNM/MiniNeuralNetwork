@@ -1,4 +1,6 @@
 import unittest
+import numpy as np
+
 from layers.dense import Dense
 from engines.model import Model
 from ops.activations import *
@@ -24,7 +26,7 @@ class MyTestCase(unittest.TestCase):
             [5, 6]
         ])
 
-        layer = Dense(3, 2, activation='sigmoid')
+        layer = Dense(3, 2, activation='sigmoid', use_bias=False)
         layer.cache = x
         layer.weight = w
         layer.outputs = y_hat
@@ -33,11 +35,11 @@ class MyTestCase(unittest.TestCase):
         ]
 
         model = Model(layers)
-        actual = model.do_backward(y)
+        actual, _ = model.do_backward(y)
         expected = np.array([[
-            [1.960e-04, -4.500e-03],
-            [7.840e-05, -1.800e-03],
-            [3.528e-04, -8.100e-03]
+            [-1.960e-04, 4.500e-03],
+            [-7.840e-05, 1.800e-03],
+            [-3.528e-04, 8.100e-03]
         ]])
         np.testing.assert_almost_equal(expected, actual)
 

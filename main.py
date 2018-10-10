@@ -43,9 +43,9 @@ def train_with_keras(X_train, X_test, y_train, y_test):
 
 def train_with_my_model(X_train, X_test, y_train, y_test):
     layers = [
-        Dense(4, 7, 'sigmoid'),
-        Dense(7, 7, 'sigmoid'),
-        Dense(7, 3, 'tanh')
+        Dense(4, 7, 'sigmoid', use_bias=False),
+        Dense(7, 7, 'sigmoid', use_bias=True),
+        Dense(7, 3, 'tanh', use_bias=False)
     ]
 
     model = Model(layers)

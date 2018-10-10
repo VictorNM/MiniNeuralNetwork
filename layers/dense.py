@@ -3,9 +3,11 @@ from ops import activations
 
 
 class Dense(Layer):
-    def __init__(self, n_in, n_out, activation=None):
+    def __init__(self, n_in, n_out, activation=None, use_bias=True):
         self.weight = K.random(n_in, n_out)
-        self.bias = K.zeros((1, n_out))
+        self.use_bias = use_bias
+        if use_bias:
+            self.bias = K.zeros((1, n_out))
 
         self.activation = None
         self.activation_derivative = None
@@ -17,7 +19,11 @@ class Dense(Layer):
 
     def forward(self, x):
         self.cache = x
-        linear_output = K.dot(x, self.weight) + self.bias
+        linear_output = K.dot(x, self.weight)
+
+        if self.use_bias:
+            linear_output += self.bias
+
         if self.activation is None:
             self.outputs = linear_output
         else:
@@ -34,3 +40,8 @@ class Dense(Layer):
         delta_bias = K.ones(len(delta_y)).dot(e)
 
         return e, delta_weight, delta_bias
+
+    def update_params(self, adjustment, learning_rate):
+        self.weight -= adjustment['delta_weight'] * learning_rate
+        if self.use_bias:
+            self.bias -= adjustment['delta_bias'] * learning_rate
