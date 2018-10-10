@@ -1,6 +1,14 @@
 import backend as K
 
 
+def linear(x):
+    return x
+
+
+def d_linear(x):
+    return 1
+
+
 def sigmoid(x):
     return K.sigmoid(x)
 
@@ -26,9 +34,6 @@ def d_relu(x):
 
 
 def get(id):
-    if id is None:
-        return None, None
-
     if id == 'sigmoid':
         return sigmoid, d_sigmoid
 
@@ -37,3 +42,5 @@ def get(id):
 
     if id == 'relu':
         return relu, d_relu
+
+    return linear, d_linear
