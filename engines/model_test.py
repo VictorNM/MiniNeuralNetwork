@@ -6,8 +6,8 @@ from engines.model import Model
 from ops.activations import *
 
 
-class MyTestCase(unittest.TestCase):
-    def test_backward_one_layer(self):
+class TestModel(unittest.TestCase):
+    def test_backward_one_layer_without_bias(self):
         y = np.array([
             [1, 0]
         ])
@@ -43,7 +43,7 @@ class MyTestCase(unittest.TestCase):
         ]])
         np.testing.assert_almost_equal(expected, actual)
 
-    def test_backward_two_layer(self):
+    def test_backward_two_layer_without_bias(self):
         # layer 1
         layer_1 = Dense(3, 2, activation='sigmoid', use_bias=False)
         layer_1.weight = np.array([
@@ -94,7 +94,8 @@ class MyTestCase(unittest.TestCase):
         for i in range(len(actual)):
             np.testing.assert_almost_equal(expected[i], actual[i])
 
-    def test_backward_three_layers(self):
+    def test_backward_three_layers_without_bias(self):
+
         # define layer 1
         layer_1 = Dense(3, 3, activation='sigmoid', use_bias=False)
         layer_1.weight = np.array([

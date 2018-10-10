@@ -5,24 +5,24 @@ def sigmoid(x):
     return K.sigmoid(x)
 
 
-def sigmoid_derivative(x):
-    return K.sigmoid_derivative(x)
+def d_sigmoid(x):
+    return K.d_sigmoid(x)
 
 
 def tanh(x):
     return K.tanh(x)
 
 
-def tanh_derivative(x):
-    return K.tanh_derivative(x)
+def d_tanh(x):
+    return K.d_tanh(x)
 
 
 def relu(x):
     return K.relu(x)
 
 
-def relu_derivative(x):
-    return K.relu_derivative(x)
+def d_relu(x):
+    return K.d_relu(x)
 
 
 def get(id):
@@ -30,10 +30,10 @@ def get(id):
         return None, None
 
     if id == 'sigmoid':
-        return sigmoid, sigmoid_derivative
+        return sigmoid, d_sigmoid
 
     if id == 'tanh':
-        return tanh, tanh_derivative
+        return tanh, d_tanh
 
     if id == 'relu':
-        return relu, relu_derivative
+        return relu, d_relu
