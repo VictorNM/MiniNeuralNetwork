@@ -5,12 +5,12 @@ def mean_square_error(y, y_hat):
     return K.mean_square_error(y, y_hat)
 
 
-def cross_entropy(y, y_hat):
-    return K.cross_entropy(y, y_hat)
+def categorical_crossentropy(y, y_hat):
+    return K.categorical_crossentropy(y, y_hat)
 
 
 def get(id):
     if id == 'mean_squared_error':
         return mean_square_error
-    elif id == 'cross_entropy':
-        return cross_entropy
+    elif id == 'categorical_crossentropy':
+        return categorical_crossentropy

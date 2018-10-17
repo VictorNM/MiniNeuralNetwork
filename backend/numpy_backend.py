@@ -1,4 +1,5 @@
 import numpy as np
+import collections
 
 
 def zeros(shape):
@@ -76,10 +77,15 @@ def softmax(x):
 
 
 def mean_square_error(y, y_hat):
-    return np.mean(1.0 / 2.0 * np.sum(np.square(y - y_hat), axis=1))
+    if isinstance(y[0], (collections.Sequence, np.ndarray)):
+        return np.mean(1.0 / 2.0 * np.sum(np.square(y_hat - y), axis=1))
+    elif isinstance(y, (collections.Sequence, np.ndarray)):
+        return np.mean(1.0 / 2.0 * np.square(y_hat - y))
+    else:
+        return 1.0 / 2.0 * np.square(y_hat - y)
 
 
-def cross_entropy(y, y_hat):
+def categorical_crossentropy(y, y_hat):
     y_hat = np.clip(y_hat, 1e-12, 1. - 1e-12)
     ce = -np.mean(np.log(y_hat) * y)
     return ce
