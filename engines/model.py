@@ -1,25 +1,30 @@
 import backend as K
+from ops import losses
 
 
 class Model:
     def __init__(self, layers):
         self.layers = layers
+        self.loss_function = losses.mean_square_diff
 
     def fit(self, X, y, n_epochs=2000, learning_rate=0.001):
         for epoch in range(n_epochs):
-            self.do_forward(X)
+            y_hat = self.do_forward(X)
+
+            loss = self.loss_function(y, y_hat)
+            if epoch % 1000 == 0:
+                print(loss)
+
             adjustments = self.do_backward(y)
             self.update_params(adjustments, learning_rate)
 
     def predict(self, X):
-        o = X
-        for layer in self.layers:
-            o = layer.forward(o)
+        o = self.do_forward(X)
 
         return K.argmax(o, axis=1)
 
-    def do_forward(self, x):
-        o = x
+    def do_forward(self, X):
+        o = X
         for layer in self.layers:
             o = layer.forward(o)
 

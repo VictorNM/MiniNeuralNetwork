@@ -37,6 +37,9 @@ def random(x, y):
     return np.random.rand(x, y)
 
 
+# === activations ===
+
+
 def sigmoid(x):
     return 1.0 / (1.0 + np.exp(-x))
 
@@ -59,3 +62,16 @@ def relu(x):
 
 def d_relu(x):
     return 1.0 * (x > 0)
+
+
+# === loss ===
+
+
+def mean_square_diff(y, y_hat):
+    return np.mean(1.0 / 2.0 * np.sum(np.square(y - y_hat), axis=1))
+
+
+def cross_entropy(y, y_hat):
+    y_hat = np.clip(y_hat, 1e-12, 1. - 1e-12)
+    ce = -np.mean(np.log(y_hat) * y)
+    return ce
