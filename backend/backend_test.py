@@ -26,6 +26,7 @@ class ActivationTest(unittest.TestCase):
 
         np.testing.assert_almost_equal(expected, actual)
 
+
 class LossTest(unittest.TestCase):
     def test_mse_scalar(self):
         expected = 2

@@ -77,10 +77,14 @@ def softmax(x):
 
 
 def mean_square_error(y, y_hat):
-    if isinstance(y[0], (collections.Sequence, np.ndarray)):
-        return np.mean(1.0 / 2.0 * np.sum(np.square(y_hat - y), axis=1))
-    elif isinstance(y, (collections.Sequence, np.ndarray)):
-        return np.mean(1.0 / 2.0 * np.square(y_hat - y))
+    if isinstance(y, (collections.Sequence, np.ndarray)):
+        # at least 2d array
+        if isinstance(y[0], (collections.Sequence, np.ndarray)):
+            return np.mean(1.0 / 2.0 * np.sum(np.square(y_hat - y), axis=1))
+        # 1d array
+        else:
+            return np.mean(1.0 / 2.0 * np.square(y_hat - y))
+    # scalar number
     else:
         return 1.0 / 2.0 * np.square(y_hat - y)
 

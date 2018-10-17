@@ -3,7 +3,6 @@ import numpy as np
 
 from layers.dense import Dense
 from engines.model import Model
-from ops.activations import *
 
 
 class TestModel(unittest.TestCase):
@@ -165,6 +164,13 @@ class TestModel(unittest.TestCase):
         ]
         for i in range(len(actual)):
             np.testing.assert_almost_equal(expected[i], actual[i])
+
+    def test_can_not_fit_if_was_not_compiled(self):
+        nn = Model([Dense(1,1)])
+        with self.assertRaises(RuntimeError) as cm:
+            nn.fit([1,2], 1)
+
+        self.assertTrue(isinstance(cm.exception, RuntimeError))
 
 if __name__ == '__main__':
     unittest.main()
