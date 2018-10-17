@@ -37,6 +37,10 @@ def random(x, y):
     return np.random.rand(x, y)
 
 
+def one_hot(labels, n_classes):
+    return np.eye(n_classes)[labels]
+
+
 # === activations ===
 
 
@@ -64,10 +68,14 @@ def d_relu(x):
     return 1.0 * (x > 0)
 
 
+# TODO: implement softmax function
+def softmax(x):
+    pass
+
 # === loss ===
 
 
-def mean_square_diff(y, y_hat):
+def mean_square_error(y, y_hat):
     return np.mean(1.0 / 2.0 * np.sum(np.square(y - y_hat), axis=1))
 
 

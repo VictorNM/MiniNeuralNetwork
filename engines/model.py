@@ -5,9 +5,12 @@ from ops import losses
 class Model:
     def __init__(self, layers):
         self.layers = layers
-        self.loss_function = losses.mean_square_diff
+        self.is_compiled = False
 
     def fit(self, X, y, n_epochs=2000, learning_rate=0.001):
+        if not self.is_compiled:
+            raise RuntimeError("The model was never compiled!")
+
         for epoch in range(n_epochs):
             y_hat = self.do_forward(X)
 
@@ -22,6 +25,10 @@ class Model:
         o = self.do_forward(X)
 
         return K.argmax(o, axis=1)
+
+    def compile(self, loss=None):
+        self.loss_function = losses.get(loss)
+        self.is_compiled = True
 
     def do_forward(self, X):
         o = X
