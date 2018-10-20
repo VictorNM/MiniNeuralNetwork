@@ -172,5 +172,17 @@ class TestModel(unittest.TestCase):
 
         self.assertTrue(isinstance(cm.exception, RuntimeError))
 
+    def test_must_fail_if_layers_is_not_a_list(self):
+        with self.assertRaises(RuntimeError) as cm:
+            Model("123")
+
+        self.assertTrue(isinstance(cm.exception, RuntimeError))
+
+    def test_must_fail_if_layers_contains_non_layer_objects(self):
+        with self.assertRaises(RuntimeError) as cm:
+            Model(["123"])
+
+        self.assertTrue(isinstance(cm.exception, RuntimeError))
+
 if __name__ == '__main__':
     unittest.main()

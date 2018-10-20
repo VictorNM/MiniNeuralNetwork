@@ -38,5 +38,9 @@ class MyTestCase(unittest.TestCase):
 
         np.testing.assert_array_equal(expected, actual)
 
+    def test_forward_with_bias(self):
+        layer = Dense(3, 2, use_bias=True)
+        pass
+
 if __name__ == '__main__':
     unittest.main()

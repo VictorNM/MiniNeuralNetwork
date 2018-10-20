@@ -1,9 +1,17 @@
 import backend as K
+from layers.base import Layer
 from ops import losses
 
 
 class Model:
     def __init__(self, layers):
+        if not isinstance(layers, list):
+            raise RuntimeError("layers must be an list of Layer")
+
+        for layer in layers:
+            if not isinstance(layer, Layer):
+                raise RuntimeError("layers must be an list of Layer")
+
         self.layers = layers
         self.is_compiled = False
 

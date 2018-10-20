@@ -89,7 +89,7 @@ def mean_square_error(y, y_hat):
         return 1.0 / 2.0 * np.square(y_hat - y)
 
 
-def categorical_crossentropy(y, y_hat):
-    y_hat = np.clip(y_hat, 1e-12, 1. - 1e-12)
+def categorical_crossentropy(y, y_hat, epsilon=1e-12):
+    y_hat = np.clip(y_hat, epsilon, 1. - epsilon)
     ce = -np.mean(np.log(y_hat) * y)
     return ce
