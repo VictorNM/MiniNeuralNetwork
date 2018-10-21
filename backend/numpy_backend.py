@@ -34,8 +34,9 @@ def exp(x):
     return np.exp(x)
 
 
-def random(x, y):
-    return np.random.rand(x, y)
+def random_normal(shape, mean=0.0, stddev=1.0, seed=None):
+    np.random.seed(seed)
+    return np.random.normal(loc=mean, scale=stddev, size=shape)
 
 
 def one_hot(labels, n_classes):

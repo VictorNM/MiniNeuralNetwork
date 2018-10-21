@@ -1,13 +1,16 @@
-from layers import *
-from ops import activations
+from layers.base import Layer
+from layers._layers import *
 
 
 class Dense(Layer):
-    def __init__(self, n_in, n_out, activation=None, use_bias=True):
-        self.weight = K.random(n_in, n_out)
+    def __init__(self, n_in, n_out,
+                 activation=None,
+                 use_bias=True):
+        
+        self.weight = initializers.random_normal((n_in, n_out))
         self.use_bias = use_bias
         if use_bias:
-            self.bias = K.zeros((1, n_out))
+            self.bias = initializers.zeros((1, n_out))
 
         self.activation, self.activation_derivative = activations.get(activation)
 
