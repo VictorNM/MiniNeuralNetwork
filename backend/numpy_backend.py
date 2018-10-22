@@ -43,6 +43,9 @@ def one_hot(labels, n_classes):
     return np.eye(n_classes)[labels]
 
 
+def flat(x):
+    return x.flatten()
+
 # === activations ===
 
 
@@ -94,3 +97,44 @@ def categorical_crossentropy(y, y_hat, epsilon=1e-12):
     y_hat = np.clip(y_hat, epsilon, 1. - epsilon)
     ce = -np.mean(np.log(y_hat) * y)
     return ce
+
+
+# === convolution ====
+
+def _pad(x, padding_size, mode='constant'):
+    return np.pad(x, padding_size, mode)
+
+
+def im2col(x, w_shape, stride=1, padding='valid'):
+
+    '''
+
+    :param x: input image
+    :param w_shape: kernel's shape
+    :param stride: value of stride
+    :param padding: 'valid' / 'same'
+    :return: x_conv
+    '''
+
+    if padding == 'same':
+        if stride != 1:
+            raise RuntimeError("Padding 'same' only accept stride=1")
+        else:
+            padding_size = (int(w_shape[0] / 2), int(w_shape[1] / 2))
+            x = _pad(x, padding_size, 'constant')
+
+    n_row = w_shape[0] * w_shape[1]
+    n_vertical_step = int((x.shape[0] - w_shape[0]) / stride) + 1
+    n_horizontal_step = int((x.shape[1] - w_shape[1]) / stride) + 1
+    n_col = n_horizontal_step * n_vertical_step
+
+    x_conv = zeros((n_row, n_col))
+    for i in range(n_vertical_step):
+        for j in range(n_horizontal_step):
+            x_conv[:, i*n_horizontal_step+j] = np.copy(x[i:i+w_shape[0], j:j+w_shape[1]].flatten()[::-1])
+
+    return x_conv
+
+
+def kernel2row(x, w_shape, stride=1, padding=None):
+    pass
