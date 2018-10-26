@@ -7,6 +7,8 @@ from keras.layers import Conv2D
 
 from keras import backend as K
 
+# from layers.dense import Dense
+
 batch_size = 128
 num_classes = 10
 epochs = 12

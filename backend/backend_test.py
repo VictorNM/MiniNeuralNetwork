@@ -142,5 +142,31 @@ class ConvTest(unittest.TestCase):
 
         np.testing.assert_array_equal(expected, actual)
 
+    def test_kernel2col(self):
+        w = np.array([
+            [1, 2],
+            [3, 4]
+        ])
+
+        actual = K.kernel2row(w, x_shape=(3,3))
+        expected = np.array([
+            [4, 3, 0, 2, 1, 0, 0, 0, 0],
+            [0, 4, 3, 0, 2, 1, 0, 0, 0],
+            [0, 0, 0, 4, 3, 0, 2, 1, 0],
+            [0, 0, 0, 0, 4, 3, 0, 2, 1]
+        ])
+        np.testing.assert_array_equal(expected, actual)
+
+    def test_kernel2col_stride_2(self):
+        w = np.array([
+            [1, 2],
+            [3, 4]
+        ])
+        actual = K.kernel2row(w, x_shape=(3, 3), stride=2)
+        expected = np.array([
+            [4, 3, 0, 2, 1, 0, 0, 0, 0]
+        ])
+        np.testing.assert_array_equal(expected, actual)
+
 if __name__ == '__main__':
     unittest.main()
