@@ -1,10 +1,7 @@
 from layers.base import Layer
 from layers._layers import *
 
-# TODO 1: implement forward
 # TODO 2: implement backward
-# TODO 3: implement multi-chanel input
-# TODO 4: implement multi-filter
 
 
 class Conv2D(Layer):
@@ -19,20 +16,29 @@ class Conv2D(Layer):
                  kernel_initializer='random_normal',
                  bias_initializer='zeros'):
 
+        assert isinstance(kernel_size, tuple) and len(kernel_size) == 2
+        assert isinstance(stride, tuple) and len(stride) == 2
+        assert padding in {'same', 'valid'}
+        assert kernel_initializer, bias_initializer in {'zeros', 'random_normal'}
+
         self.input_shape = input_shape
-        self.num_kernel = num_kernel
+        self.num_kernel = int(num_kernel)
         self.kernel_size = kernel_size
         self.stride = stride
         self.padding = padding
+        self.activation = activations.get(activation)
+        self.use_bias = use_bias
+        self.kernel_initializer = initializers.get(kernel_initializer)
+        self.bias_initializer = initializers.get(bias_initializer)
 
-        self.outputs = None
+        self.kernel = None
         self.cache = dict()
         self.built = False
 
     def build(self):
-        input_dim = self.input_shape[-1]
-        kernel_shape = (self.num_kernel, ) + self.kernel_size + (input_dim, )
-        self.kernel = initializers.random_normal(kernel_shape)
+        num_channel = self.input_shape[-1]
+        kernel_shape = (self.num_kernel, ) + self.kernel_size + (num_channel, )
+        self.kernel = self.kernel_initializer(kernel_shape)
         self.built = True
 
     def compute_output_shape(self, input_shape):
@@ -40,13 +46,10 @@ class Conv2D(Layer):
         num_samples = input_shape[0]
         input_size = input_shape[1:-1]
 
-        if self.padding == 'same':
-            output_size = input_size
-
-        if self.padding == 'valid':
-            output_row = (input_size[0] - self.kernel_size[0]) // self.stride[0] + 1
-            output_col = (input_size[1] - self.kernel_size[1]) // self.stride[1] + 1
-            output_size = (output_row, output_col)
+        output_size = list()
+        for i in range(len(input_size)):
+            length = K.compute_output_length(input_size[i], self.kernel_size[i], self.stride[i], self.padding)
+            output_size.append(length)
 
         return (num_samples,) + tuple(output_size) + (self.num_kernel,)
 
@@ -57,9 +60,18 @@ class Conv2D(Layer):
         :return: outputs of the layer
         """
         assert self.built == True
-        return K.conv2d(inputs, self.kernel, self.stride, self.padding)
+        assert K.shape(inputs)[1:] == self.input_shape
+
+        outputs, input_conv = K.conv2d(inputs, self.kernel, self.stride, self.padding)
+
+        self.cache['inputs'] = inputs
+        self.cache['input_convolutions'] = input_conv
+        self.cache['outputs'] = outputs
+
+        return outputs
 
     def backward(self, delta_y):
+
         delta_w = K.reshape(
             K.dot(
                 delta_y, K.transpose(self.cache['x_conv'])
