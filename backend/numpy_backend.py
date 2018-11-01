@@ -117,134 +117,60 @@ def categorical_crossentropy(y, y_hat, epsilon=1e-12):
 
 # === convolution ====
 
-def _pad(matrix3d, padding_size, mode='constant'):
-    assert len(shape(matrix3d)) == 3
-    assert len(padding_size) == 2
-
-    padding_size = ((padding_size[0], ), (padding_size[1], ), (0, ))
-    return np.pad(matrix3d, padding_size, mode)
+def pad(inputs, padding_size, mode='constant'):
+    return np.pad(inputs, padding_size, mode)
 
 
 def _rotate180(matrix, axis=(0,1)):
     return np.rot90(matrix, 2, axis)
 
 
-def _compute_padding_length(kernel_length, padding):
-    if padding == 'valid':
-        return 0
-    if padding == 'same':
-        return kernel_length // 2
-
-
-def _compute_padding_size(kernel_size, padding):
-    padding_size = list()
-    for i in range(len(kernel_size)):
-        padding_size.append(_compute_padding_length(kernel_size[i], padding))
-
-    return tuple(padding_size)
-
-
-def compute_output_length(input_length, kernel_length, stride=1, padding='valid'):
-    input_length = input_length + 2 * _compute_padding_length(kernel_length, padding)
-    return (input_length - kernel_length) // stride + 1
-
-
-def compute_input_convolution(inputs, kernel_size, stride=(1, 1), padding='valid'):
+def compute_input_convolution(inputs, kernel_size, output_size, stride=(1, 1)):
     """
     compute input convolution for a single input with single or multi channel
+    NOTE: this function assumes that inputs are already padded
     :param inputs: 3d matrix of shape (num_row, num_col, num_channel)
     :param kernel_size: size of a 2d kernel (num_row, num_col)
     :return: input convolution with the same channel of input
     """
 
-    padding_size = _compute_padding_size(kernel_size, padding)
-    padded_inputs = _pad(inputs, padding_size)
-
     input_shape = shape(inputs)
     num_channel = input_shape[-1]
-    input_size = input_shape[:-1]
 
-    n_output_row = compute_output_length(input_size[0], kernel_size[0], stride[0], padding)
-    n_output_col = compute_output_length(input_size[1], kernel_size[1], stride[1], padding)
-    n_input_conv_row = kernel_size[0] * kernel_size[1]
-    n_input_conv_col = n_output_row * n_output_col
+    n_output_row, n_output_col = output_size
 
-    input_convolution = empty((n_input_conv_row, n_input_conv_col, num_channel))
+    n_input_convolution_row = kernel_size[0] * kernel_size[1]
+    n_input_convolution_col = n_output_row * n_output_col
+    input_convolution_shape = (n_input_convolution_row, n_input_convolution_col, num_channel)
+
+    input_convolution = empty(input_convolution_shape)
     for i in range(n_output_row):
         for j in range(n_output_col):
-            marked_area = padded_inputs[i:i+kernel_size[0], j:j+kernel_size[1], :]
-            row_conv = reshape(_rotate180(marked_area), (n_input_conv_row, num_channel))
+            start_row, start_col = i*stride[0], j*stride[1]
+            end_row, end_col = start_row + kernel_size[0], start_col + kernel_size[1]
+            marked_area = inputs[start_row:end_row, start_col:end_col, :]
+            row_conv = reshape(_rotate180(marked_area), (n_input_convolution_row, num_channel))
             input_convolution[:, i*n_output_col+j, :] = row_conv
 
     return input_convolution
 
 
-def conv2d_one_input(one_input, kernels, stride=(1, 1), padding='valid'):
-    """
-    Compute the multi-channel output by applying all kernel on a single input
-    :param one_input: 3d matrix (num_row, num_col, num_channel)
-    :param kernels: 4d matrix (num_kernel, num_row, num_col, num_channel)
-    :param stride:
-    :param padding:
-    :return: output of the convolution
-    """
-    input_shape = shape(one_input)
-    kernel_shape = shape(kernels)
+def compute_input_convolutions(inputs, kernel_size, output_size, stride=(1, 1)):
 
-    num_input_channel = input_shape[-1]
-    num_output_channel = kernel_shape[0]    # the number of output channel == the number of kernel
-    kernel_size = kernel_shape[1:-1]
-    input_conv = compute_input_convolution(one_input, kernel_size, stride, padding)
+    assert len(kernel_size) == 2
 
-    n_ouput_row = compute_output_length(input_shape[0], kernel_size[0], stride[0], padding)
-    n_output_col = compute_output_length(input_shape[1], kernel_size[1], stride[1], padding)
-
-    output_size = (n_ouput_row, n_output_col)
-    output_shape = output_size + (num_output_channel, )
-
-    outputs = empty(output_shape)
-    for k in range(num_output_channel):
-        one_output_channel = zeros(output_size)
-        for c in range(num_input_channel):
-            # Y = X * W = Reshape(W_flat x X_conv)
-            one_output_channel += reshape(dot(flat(kernels[:,:,:,c]), input_conv[:,:,c]), output_size)
-
-        outputs[:,:,k] = one_output_channel
-
-    return outputs, input_conv
-
-
-def conv2d(inputs, kernels, stride=(1, 1), padding='valid'):
-    """
-    Compute convolutional outputs for many inputs
-    :param inputs: 4d matrix (num_input, num_row, num_col, num_channel)
-    :param kernels: 4d matrix (num_kernel, num_row, num_col, num_channel)
-    :param stride: 2d matrix (vertical_stride, horizontal_stride)
-    :param padding: 'same' or 'valid'
-    :return: 4d matrix (num_output, num_row, num_col, num_channel)
-    """
     input_shape = shape(inputs)
-    kernel_shape = shape(kernels)
-
-    assert len(input_shape) == 4
-    assert len(kernel_shape) == 4
-    assert input_shape[-1] == kernel_shape[-1]
-
     num_input = input_shape[0]
-    num_kernel = kernel_shape[0]
-    outputs = list()
 
-    input_convs = list()
+    input_convolutions = list()
 
     for i in range(num_input):
-        output, input_conv = conv2d_one_input(inputs[i], kernels, stride, padding)
-        outputs.append(output)
-        input_convs.append(input_conv)
+        input_convolutions.append(compute_input_convolution(inputs[i], kernel_size, output_size, stride))
 
-    return np.array(outputs), np.array(input_convs)
+    return input_convolutions
 
 
-def calculate_kernel_convolution(kernel, input_size, stride=(1, 1), padding='valid'):
+def compute_kernel_convolution(kernel, input_size, output_size, stride=(1, 1)):
 
     kernel_shape = shape(kernel)
 
@@ -253,8 +179,7 @@ def calculate_kernel_convolution(kernel, input_size, stride=(1, 1), padding='val
 
     num_channel = kernel_shape[-1]
 
-    n_output_row = compute_output_length(input_size[0], kernel_shape[0], stride[0], padding)
-    n_output_col = compute_output_length(input_size[1], kernel_shape[1], stride[1], padding)
+    n_output_row, n_output_col = output_size
     n_kernel_conv_row = n_output_row * n_output_col
     n_kernel_conv_col = input_size[0] * input_size[1]
 
@@ -271,10 +196,37 @@ def calculate_kernel_convolution(kernel, input_size, stride=(1, 1), padding='val
     return kernel_convolution
 
 
-def calculate_kernel_convolutions(kernels, input_size, stride=(1, 1), padding='valid'):
+def compute_kernel_convolutions(kernels, input_size, output_size, stride=(1, 1)):
     kernel_convolutions = list()
     for i in range(len(kernels)):
-        kernel_convolution = calculate_kernel_convolution(kernels[i], input_size, stride, padding)
+        kernel_convolution = compute_kernel_convolution(kernels[i], input_size, output_size, stride)
         kernel_convolutions.append(kernel_convolution)
 
     return np.array(kernel_convolutions)
+
+
+def _compute_one_channel_output(input_convolution, kernel, output_size):
+    kernel_shape = shape(kernel)
+    kernel_size = kernel_shape[:-1]
+    num_channel = kernel_shape[-1]
+    kernel_flat = reshape(kernel, (kernel_size[0] * kernel_size[1], num_channel))
+
+    output = zeros(output_size)
+    for i in range(num_channel):
+        output += reshape(dot(kernel_flat[:, i], input_convolution[:, :, i]), output_size)
+
+    return output
+
+
+def compute_multi_channel_output(input_convolution, kernels, output_size):
+    kernel_shape = shape(kernels)
+    num_kernel = kernel_shape[0]
+
+    output_shape = output_size + (num_kernel, )
+    output = empty(output_shape)
+
+    for i in range(num_kernel):
+        one_channel_output = _compute_one_channel_output(input_convolution, kernels[i], output_size)
+        output[:, :, i] = one_channel_output
+
+    return output
