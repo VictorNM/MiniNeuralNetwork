@@ -4,62 +4,75 @@ from ops import losses
 
 
 class Model:
-    def __init__(self, layers):
-        if not isinstance(layers, list):
-            raise RuntimeError("layers must be an list of Layer")
+    def __init__(self, layers=None):
+        if layers is not None and not isinstance(layers, list):
+            raise RuntimeError("_layers must be an list of Layer")
 
-        for layer in layers:
-            if not isinstance(layer, Layer):
-                raise RuntimeError("layers must be an list of Layer")
+        self._layers = None
+        self._is_compiled = False
 
-        self.layers = layers
-        self.is_compiled = False
+        if isinstance(layers, list):
+            for layer in layers:
+                self.add(layer)
 
     def fit(self, X, y, n_epochs=2000, learning_rate=0.001):
-        if not self.is_compiled:
-            raise RuntimeError("The model was never compiled!")
+        if not self._is_compiled:
+            raise RuntimeError("You have to compile the model before use it!")
 
         for epoch in range(n_epochs):
-            y_hat = self.do_forward(X)
+            y_hat = self._do_forward(X)
+            self.training_outputs = y_hat
 
-            loss = self.loss_function(y, y_hat)
+            loss = self._loss_function(y, y_hat)
             if epoch % 1000 == 0:
-                print(loss)
+                print("Loss at epochs %d: %f" %(epoch, loss))
 
-            adjustments = self.do_backward(y)
+            adjustments = self._do_backward(y)
             self.update_params(adjustments, learning_rate)
 
     def predict(self, X):
-        o = self.do_forward(X)
+        o = self._do_forward(X)
 
         return K.argmax(o, axis=1)
 
     def compile(self, loss=None):
-        self.loss_function = losses.get(loss)
-        self.is_compiled = True
+        for layer in self._layers:
+            layer.build()
 
-    def do_forward(self, X):
+        self._loss_function = losses.get(loss)
+        self._is_compiled = True
+
+    def add(self, layer):
+        if not isinstance(layer, Layer):
+            raise RuntimeError("layers must be an list of Layer")
+
+        if self._layers is None:
+            self._layers = list()
+
+        self._layers.append(layer)
+
+    def _do_forward(self, X):
         o = X
-        for layer in self.layers:
+        for layer in self._layers:
             o = layer.forward(o)
 
         return o
 
-    def do_backward(self, y):
+    def _do_backward(self, y):
         adjustments = list()
 
-        for i in reversed(range(len(self.layers))):
-            layer = self.layers[i]
-            if layer is self.layers[-1]:
-                delta_y = layer.outputs - y
+        for i in reversed(range(len(self._layers))):
+            layer = self._layers[i]
+            if layer is self._layers[-1]:
+                delta_y = self.training_outputs - y
             else:
-                delta_y = K.dot(e, self.layers[i + 1].weight.T)
+                delta_y = backward_output['delta_inputs']
 
-            e, adjustment = layer.backward(delta_y)
-            adjustments.insert(0, adjustment)
+            backward_output = layer.backward(delta_y)
+            adjustments.insert(0, backward_output)
 
         return adjustments
 
     def update_params(self, adjustments, learning_rate):
-        for i, layer in enumerate(self.layers):
+        for i, layer in enumerate(self._layers):
             layer.update_params(adjustments[i], learning_rate)

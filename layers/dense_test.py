@@ -8,8 +8,8 @@ class MyTestCase(unittest.TestCase):
     def test_forward(self):
         layer = Dense(3, 2, 'sigmoid')
 
-        # change random weight to a fixed weight
-        layer.weight = np.array([
+        # change random kernels to a fixed kernels
+        layer.kernels = np.array([
             [1, 2],
             [3, 4],
             [5, 6]
@@ -17,7 +17,7 @@ class MyTestCase(unittest.TestCase):
         x = np.array([[0.1, 0.2, 0.3]])
 
         actual = layer.forward(x)
-        expected = layer.activation(np.dot(x, layer.weight))
+        expected = sigmoid(np.dot(x, layer.kernels))
 
         np.testing.assert_array_equal(expected, actual)
 
@@ -25,8 +25,8 @@ class MyTestCase(unittest.TestCase):
     def test_forward_without_activation(self):
         layer = Dense(3, 2, use_bias=False)
 
-        # change random weight to a fixed weight
-        layer.weight = np.array([
+        # change random kernels to a fixed kernels
+        layer.kernels = np.array([
             [1, 2],
             [3, 4],
             [5, 6]
@@ -34,7 +34,7 @@ class MyTestCase(unittest.TestCase):
         x = np.array([[0.1, 0.2, 0.3]])
 
         actual = layer.forward(x)
-        expected = np.dot(x, layer.weight)
+        expected = np.dot(x, layer.kernels)
 
         np.testing.assert_array_equal(expected, actual)
 

@@ -34,13 +34,36 @@ def d_relu(x):
 
 
 def get(id):
+    if id is None:
+        return linear
+
     if id == 'sigmoid':
-        return sigmoid, d_sigmoid
+        return sigmoid
 
     if id == 'tanh':
-        return tanh, d_tanh
+        return tanh
 
     if id == 'relu':
-        return relu, d_relu
+        return relu
 
-    return linear, d_linear
+    raise RuntimeError('Activation is invalid')
+
+
+def get_derivative(id):
+    if id is None:
+        return d_linear
+
+    if id == 'sigmoid':
+        return d_sigmoid
+
+    if id == 'tanh':
+        return d_tanh
+
+    if id == 'relu':
+        return d_relu
+
+    raise RuntimeError('Activation is invalid')
+
+
+def serialize(activation):
+    return activation.__name__

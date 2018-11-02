@@ -7,7 +7,7 @@ from keras.layers import Conv2D
 
 from keras import backend as K
 
-# from layers.dense import Dense
+# from _layers.dense import Dense
 
 batch_size = 128
 num_classes = 10
@@ -77,7 +77,7 @@ def test_with_my_model(x_train, y_train, x_test, y_test):
 
 def main():
     x_train, y_train, x_test, y_test = prepare_data()
-    # train_with_keras(x_train, y_train, x_test, y_test)
+    train_with_keras(x_train, y_train, x_test, y_test)
 
 if __name__ == '__main__':
     main()

@@ -1,45 +1,66 @@
 from layers.base import Layer
+from layers.activation import Activation
 from layers._layers import *
 
 
 class Dense(Layer):
     def __init__(self, n_in, n_out,
                  activation=None,
-                 use_bias=True):
-        
-        self.weight = initializers.random_normal((n_in, n_out))
+                 use_bias=True,
+                 kernel_initializer='random_normal',
+                 bias_initializer='zeros'):
+
+        self.n_in = n_in
+        self.n_out = n_out
         self.use_bias = use_bias
+        self.kernel_initializer = initializers.get(kernel_initializer)
+        self.bias_initializer = initializers.get(bias_initializer)
         if use_bias:
             self.bias = initializers.zeros((1, n_out))
 
-        self.activation, self.activation_derivative = activations.get(activation)
+        self.activation = Activation(activation)
 
-        self.cache = None
-        self.outputs = None
+        self.cache = dict()
+        self.built = False
+
+    def build(self):
+        self.kernels = self.kernel_initializer((self.n_in, self.n_out))
+        if self.use_bias:
+            self.bias = self.bias_initializer((1, self.n_out))
+
+        self.built = True
 
     def forward(self, x):
-        self.cache = x
-        linear_output = K.dot(x, self.weight)
+        self.cache['inputs'] = x
+        outputs = K.dot(x, self.kernels)
 
         if self.use_bias:
-            linear_output += self.bias
+            outputs += self.bias
 
-        self.outputs = self.activation(linear_output)
-        return self.outputs
+        outputs = self.activation.forward(outputs)
 
-    def backward(self, delta_y):
-        e = delta_y * self.activation_derivative(self.outputs)
-        delta_weight = K.dot(self.cache.T, e)
-        delta_bias = K.ones(len(delta_y)).dot(e)
+        return outputs
 
-        adjustment = {
-            'delta_weight': delta_weight,
+    def backward(self, delta_outputs):
+        inputs = self.cache['inputs']
+
+        delta_activation = self.activation.backward(delta_outputs)['delta_inputs']
+        delta_weight = K.dot(K.transpose(inputs), delta_activation)
+        delta_bias = K.ones(len(delta_outputs)).dot(delta_activation)
+        delta_input = K.dot(delta_activation, K.transpose(self.kernels))
+
+        backward_output = {
+            'delta_inputs': delta_input,
+            'delta_kernels': delta_weight,
             'delta_bias': delta_bias
         }
 
-        return e, adjustment
+        return backward_output
 
     def update_params(self, adjustment, learning_rate):
-        self.weight -= adjustment['delta_weight'] * learning_rate
+        self.kernels -= adjustment['delta_kernels'] * learning_rate
         if self.use_bias:
             self.bias -= adjustment['delta_bias'] * learning_rate
+
+    def compute_output_shape(self, input_shape):
+        pass

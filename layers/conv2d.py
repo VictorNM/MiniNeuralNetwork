@@ -1,4 +1,5 @@
 from layers.base import Layer
+from layers.activation import Activation
 from layers._layers import *
 from utils.conv_utils import _compute_padding_size
 from utils.conv_utils import pad_inputs
@@ -29,7 +30,7 @@ class Conv2D(Layer):
         self.kernel_size = kernel_size
         self.stride = stride
         self.padding = padding
-        self.activation = activations.get(activation)
+        self.activation = Activation(activation)
         self.use_bias = use_bias
         self.kernel_initializer = initializers.get(kernel_initializer)
         self.bias_initializer = initializers.get(bias_initializer)
@@ -61,15 +62,26 @@ class Conv2D(Layer):
 
         outputs = self._conv2d(inputs)
 
+        if self.activation is not None:
+            outputs = self.activation.forward(outputs)
+
         return outputs
 
     def backward(self, delta_outputs):
-        input_convolutions = self.cache['input_convolutions']
-        kernel_convolutions = K.compute_input_convolutions(self.kernel, self.input_shape[1:-1], self.stride, self.padding)
 
+        if self.activation is not None:
+            delta_outputs = self.activation.backward(delta_outputs)['delta_inputs']
 
-        output_flatten = K.reshape(delta_outputs, ())
-        pass
+        delta_kernels = self._compute_delta_kernels(delta_outputs)
+        delta_inputs = self._compute_delta_inputs(delta_outputs)
+
+        return {
+            'delta_kernels': delta_kernels,
+            'delta_inputs': delta_inputs
+        }
+
+    def update_params(self, adjustment, learning_rate):
+        self.kernel -= adjustment['delta_kernels'] * learning_rate
 
     def _conv2d(self, inputs):
         input_shape = K.shape(inputs)
@@ -95,3 +107,33 @@ class Conv2D(Layer):
         self.cache['outputs'] = outputs
 
         return outputs
+
+    def _compute_delta_kernels(self, delta_outputs):
+        output_shape = K.shape(delta_outputs)
+        output_flatten_shape = (output_shape[0], output_shape[1] * output_shape[2], output_shape[3])
+        output_flatten = K.reshape(delta_outputs, output_flatten_shape)
+        input_convolutions = self.cache['input_convolutions']
+
+        num_input = output_shape[0]
+        kernels_shape = (self.num_kernel, ) + self.kernel_size + (self.input_shape[-1], )
+        delta_kernels = K.empty(kernels_shape)
+        for i in range(num_input):
+            delta_kernels += K.compute_delta_kernels(output_flatten[i], input_convolutions[i], self.kernel_size)
+
+        return delta_kernels
+
+    def _compute_delta_inputs(self, delta_outputs):
+        outputs_shape = K.shape(delta_outputs)
+        outputs_flatten_shape = (outputs_shape[0], outputs_shape[1] * outputs_shape[2], outputs_shape[3])
+        outputs_flatten = K.reshape(delta_outputs, outputs_flatten_shape)
+
+        num_input = outputs_shape[0]
+        input_size = self.input_shape[0:-1]
+        inputs_shape = (num_input, ) + self.input_shape
+        kernel_convolutions = K.compute_kernel_convolutions(self.kernel, input_size, outputs_shape[1:-1])
+
+        delta_inputs = K.empty(inputs_shape)
+        for i in range(num_input):
+            delta_inputs[i] = K.compute_delta_input(outputs_flatten[i], kernel_convolutions, self.input_shape)
+
+        return delta_inputs

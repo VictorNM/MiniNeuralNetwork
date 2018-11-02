@@ -86,7 +86,7 @@ def relu(x):
 
 
 def d_relu(x):
-    return 1.0 * (x > 0)
+    return 1.0 * (x >= 0)
 
 
 # TODO: implement softmax function
@@ -125,7 +125,7 @@ def _rotate180(matrix, axis=(0,1)):
     return np.rot90(matrix, 2, axis)
 
 
-def compute_input_convolution(inputs, kernel_size, output_size, stride=(1, 1)):
+def _compute_input_convolution(inputs, kernel_size, output_size, stride=(1, 1)):
     """
     compute input convolution for a single input with single or multi channel
     NOTE: this function assumes that inputs are already padded
@@ -165,12 +165,12 @@ def compute_input_convolutions(inputs, kernel_size, output_size, stride=(1, 1)):
     input_convolutions = list()
 
     for i in range(num_input):
-        input_convolutions.append(compute_input_convolution(inputs[i], kernel_size, output_size, stride))
+        input_convolutions.append(_compute_input_convolution(inputs[i], kernel_size, output_size, stride))
 
     return input_convolutions
 
 
-def compute_kernel_convolution(kernel, input_size, output_size, stride=(1, 1)):
+def _compute_kernel_convolution(kernel, input_size, output_size, stride=(1, 1)):
 
     kernel_shape = shape(kernel)
 
@@ -199,7 +199,7 @@ def compute_kernel_convolution(kernel, input_size, output_size, stride=(1, 1)):
 def compute_kernel_convolutions(kernels, input_size, output_size, stride=(1, 1)):
     kernel_convolutions = list()
     for i in range(len(kernels)):
-        kernel_convolution = compute_kernel_convolution(kernels[i], input_size, output_size, stride)
+        kernel_convolution = _compute_kernel_convolution(kernels[i], input_size, output_size, stride)
         kernel_convolutions.append(kernel_convolution)
 
     return np.array(kernel_convolutions)
@@ -230,3 +230,57 @@ def compute_multi_channel_output(input_convolution, kernels, output_size):
         output[:, :, i] = one_channel_output
 
     return output
+
+
+def _compute_delta_kernel(output_flatten, input_convolution, kernel_size):
+    output_flatten_shape = shape(output_flatten)
+    input_convolution_shape = shape(input_convolution)
+
+    assert len(output_flatten_shape) == 1
+
+    num_channel = input_convolution_shape[-1]
+    kernel_shape = kernel_size + (num_channel, )
+    delta_kernel = empty(kernel_shape)
+    for i in range(num_channel):
+        delta_kernel[:, :, i] = reshape(dot(output_flatten, transpose(input_convolution[:, :, i])), kernel_size)
+
+    return delta_kernel
+
+
+def compute_delta_kernels(output_flatten, input_convolution, kernel_size):
+    output_flatten_shape = shape(output_flatten)
+    input_convolution_shape = shape(input_convolution)
+
+    assert len(output_flatten_shape) == 2     # (flatten_size, num_output_channel)
+    assert len(input_convolution_shape) == 3  # (num_row, num_col, num_input_channel)
+
+    num_kernel =  output_flatten_shape[-1]
+    num_channel = input_convolution_shape[-1]
+
+    kernels_shape = (num_kernel, ) + kernel_size + (num_channel, )
+
+    delta_kernels = empty(kernels_shape)
+    for i in range(num_kernel):
+        delta_kernels[i] = _compute_delta_kernel(output_flatten[:, i], input_convolution, kernel_size)
+
+    return delta_kernels
+
+
+def compute_delta_input(output_flatten, kernel_convolutions, input_shape):
+    output_flatten_shape = shape(output_flatten)
+    kernel_convolutions_shape = shape(kernel_convolutions)
+
+    assert len(output_flatten_shape) == 2
+    assert len(kernel_convolutions_shape) == 4
+
+    num_kernels = kernel_convolutions_shape[0]
+    num_channels = input_shape[-1]
+
+    delta_input = zeros(input_shape)
+    for i in range(num_kernels):
+        for j in range(num_channels):
+            delta_input[:, :, j] += reshape(
+                transpose(dot(output_flatten[:, i], kernel_convolutions[i, :, :, j])),
+                input_shape[0:-1])
+
+    return delta_input

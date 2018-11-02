@@ -148,5 +148,172 @@ class ConvTest(unittest.TestCase):
         ])
         np.testing.assert_array_equal(expected, actual)
 
+
+    def test_compute_delta_kernels(self):
+        x_conv = np.empty((4, 4, 1))
+        x_conv[:, :, 0] = np.array([
+            [1, 1, 1, 0],
+            [0, 1, 1, 1],
+            [0, 0, 1, 1],
+            [1, 0, 0, 1]
+        ])
+        delta_y_flatten = np.empty((4, 1))
+        delta_y_flatten[:, 0] = np.array([
+            [1, 1, 1, 1]
+        ])
+        expected = np.empty((1, 2, 2, 1))
+        expected[0, :, :, 0] = np.array([
+            [3, 3],
+            [2, 2]
+        ])
+        actual = K.compute_delta_kernels(delta_y_flatten, x_conv, kernel_size=(2,2))
+
+        np.testing.assert_array_equal(expected, actual)
+
+    def test_compute_delta_kernels_2_kernels(self):
+        x_conv = np.empty((4, 4, 1))
+        x_conv[:, :, 0] = np.array([
+            [0, 0, 1, 1],
+            [0, 1, 0, 1],
+            [1, 0, 0, 1],
+            [0, 1, 0, 0]
+        ])
+        delta_y_flatten = np.empty((4, 2))
+        delta_y_flatten[:, 0] = np.array([
+            [1, 0, 1, 1]
+        ])
+        delta_y_flatten[:, 1] = np.array([
+            [1, 0, 1, 1]
+        ])
+        expected = np.empty((2, 2, 2, 1))
+        expected[0, :, :, 0] = np.array([
+            [2, 1],
+            [2, 0]
+        ])
+        expected[1, :, :, 0] = np.array([
+            [2, 1],
+            [2, 0]
+        ])
+        actual = K.compute_delta_kernels(delta_y_flatten, x_conv, kernel_size=(2, 2))
+
+        np.testing.assert_array_equal(expected, actual)
+
+    def test_compute_delta_kernels_2_channels(self):
+        x_conv = np.empty((4, 4, 2))
+        x_conv[:, :, 0] = np.array([
+            [0, 0, 1, 1],
+            [0, 1, 0, 1],
+            [1, 0, 0, 1],
+            [0, 1, 0, 0]
+        ])
+        x_conv[:, :, 1] = np.array([
+            [0, 0, 1, 1],
+            [0, 1, 0, 1],
+            [1, 0, 0, 1],
+            [0, 1, 0, 0]
+        ])
+        delta_y_flatten = np.empty((4, 1))
+        delta_y_flatten[:, 0] = np.array([
+            [1, 0, 1, 1]
+        ])
+        expected = np.empty((1, 2, 2, 2))
+        expected[0, :, :, 0] = np.array([
+            [2, 1],
+            [2, 0]
+        ])
+        expected[0, :, :, 1] = np.array([
+            [2, 1],
+            [2, 0]
+        ])
+        actual = K.compute_delta_kernels(delta_y_flatten, x_conv, kernel_size=(2, 2))
+
+        np.testing.assert_array_equal(expected, actual)
+
+    def test_compute_delta_input(self):
+        delta_y_flatten = np.empty((4, 1))
+        delta_y_flatten[:, 0] = np.array([
+            [0, 2, 2, 1]
+        ])
+        kernel_convolutions = np.empty((1, 4, 9, 1))
+        kernel_convolutions[0, :, :, 0] = np.array([
+            [1, 1, 0, 1, 1, 0, 0, 0, 0],
+            [0, 1, 1, 0, 1, 1, 0, 0, 0],
+            [0, 0, 0, 1, 1, 0, 1, 1, 0],
+            [0, 0, 0, 0, 1, 1, 0, 1, 1]
+        ])
+        expected = np.empty((3, 3, 1))
+        expected[:, :, 0] = np.array([
+            [0, 2, 2],
+            [2, 5, 3],
+            [2, 3, 1]
+        ])
+        actual = K.compute_delta_input(delta_y_flatten, kernel_convolutions, input_shape=(3, 3, 1))
+
+        np.testing.assert_array_equal(expected, actual)
+
+    def test_compute_delta_input_2_kernels(self):
+        delta_y_flatten = np.empty((4, 2))
+        delta_y_flatten[:, 0] = np.array([
+            [0, 2, 2, 1]
+        ])
+        delta_y_flatten[:, 1] = np.array([
+            [0, 2, 2, 1]
+        ])
+        kernel_convolutions = np.empty((2, 4, 9, 1))
+        kernel_convolutions[0, :, :, 0] = np.array([
+            [1, 1, 0, 1, 1, 0, 0, 0, 0],
+            [0, 1, 1, 0, 1, 1, 0, 0, 0],
+            [0, 0, 0, 1, 1, 0, 1, 1, 0],
+            [0, 0, 0, 0, 1, 1, 0, 1, 1]
+        ])
+        kernel_convolutions[1, :, :, 0] = np.array([
+            [1, 1, 0, 1, 1, 0, 0, 0, 0],
+            [0, 1, 1, 0, 1, 1, 0, 0, 0],
+            [0, 0, 0, 1, 1, 0, 1, 1, 0],
+            [0, 0, 0, 0, 1, 1, 0, 1, 1]
+        ])
+        expected = np.empty((3, 3, 1))
+        expected[:, :, 0] = np.array([
+            [0, 4, 4],
+            [4, 10, 6],
+            [4, 6, 2]
+        ])
+        actual = K.compute_delta_input(delta_y_flatten, kernel_convolutions, input_shape=(3, 3, 1))
+
+        np.testing.assert_array_equal(expected, actual)
+
+    def test_compute_delta_input_2_channel(self):
+        delta_y_flatten = np.empty((4, 1))
+        delta_y_flatten[:, 0] = np.array([
+            [0, 2, 2, 1]
+        ])
+        kernel_convolutions = np.empty((1, 4, 9, 2))
+        kernel_convolutions[0, :, :, 0] = np.array([
+            [1, 1, 0, 1, 1, 0, 0, 0, 0],
+            [0, 1, 1, 0, 1, 1, 0, 0, 0],
+            [0, 0, 0, 1, 1, 0, 1, 1, 0],
+            [0, 0, 0, 0, 1, 1, 0, 1, 1]
+        ])
+        kernel_convolutions[0, :, :, 1] = np.array([
+            [1, 1, 0, 1, 1, 0, 0, 0, 0],
+            [0, 1, 1, 0, 1, 1, 0, 0, 0],
+            [0, 0, 0, 1, 1, 0, 1, 1, 0],
+            [0, 0, 0, 0, 1, 1, 0, 1, 1]
+        ])
+        expected = np.empty((3, 3, 2))
+        expected[:, :, 0] = np.array([
+            [0, 2, 2],
+            [2, 5, 3],
+            [2, 3, 1]
+        ])
+        expected[:, :, 1] = np.array([
+            [0, 2, 2],
+            [2, 5, 3],
+            [2, 3, 1]
+        ])
+        actual = K.compute_delta_input(delta_y_flatten, kernel_convolutions, input_shape=(3, 3, 2))
+
+        np.testing.assert_array_equal(expected, actual)
+
 if __name__ == '__main__':
     unittest.main()
