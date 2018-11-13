@@ -70,7 +70,7 @@ def sigmoid(x):
 
 
 def d_sigmoid(x):
-    return x * (1.0 - x)
+    return sigmoid(x) * (1.0 - sigmoid(x))
 
 
 def tanh(x):
@@ -78,7 +78,7 @@ def tanh(x):
 
 
 def d_tanh(x):
-    return 1.0 - np.square(x)
+    return 1.0 - np.square(tanh(x))
 
 
 def relu(x):
@@ -89,9 +89,10 @@ def d_relu(x):
     return 1.0 * (x >= 0)
 
 
-# TODO: implement softmax function
 def softmax(x):
-    pass
+    normalize_x = np.subtract(x, np.max(x, axis=1, keepdims=True))
+    exp_x = exp(normalize_x)
+    return exp_x / sum(exp_x, axis=1)
 
 # === loss ===
 
@@ -109,13 +110,23 @@ def mean_square_error(y, y_hat):
         return 1.0 / 2.0 * np.square(y_hat - y)
 
 
-def categorical_crossentropy(y, y_hat, epsilon=1e-12):
-    y_hat = np.clip(y_hat, epsilon, 1. - epsilon)
-    ce = -np.mean(np.log(y_hat) * y)
-    return ce
+def mean_square_error_derivative(y, y_hat):
+    return y_hat - y
 
+
+def categorical_crossentropy(y, y_hat, epsilon=1e-7):
+    assert shape(y) == shape(y_hat)
+    p = softmax(y_hat)
+    p = np.clip(p, epsilon, 1.0 - epsilon)
+    return np.mean(np.sum(y * -np.log(p), axis=1, keepdims=True))
+
+
+def categorical_crossentropy_derivative(y, y_hat):
+    p = softmax(y_hat)
+    return p - y
 
 # === convolution ====
+
 
 def pad(inputs, padding_size, mode='constant'):
     return np.pad(inputs, padding_size, mode)
@@ -130,7 +141,7 @@ def _compute_input_convolution(inputs, kernel_size, output_size, stride=(1, 1)):
     compute input convolution for a single input with single or multi channel
     NOTE: this function assumes that inputs are already padded
     :param inputs: 3d matrix of shape (num_row, num_col, num_channel)
-    :param kernel_size: size of a 2d kernel (num_row, num_col)
+    :param kernel_size: size of a 2d kernels (num_row, num_col)
     :return: input convolution with the same channel of input
     """
 
@@ -167,7 +178,7 @@ def compute_input_convolutions(inputs, kernel_size, output_size, stride=(1, 1)):
     for i in range(num_input):
         input_convolutions.append(_compute_input_convolution(inputs[i], kernel_size, output_size, stride))
 
-    return input_convolutions
+    return np.array(input_convolutions)
 
 
 def _compute_kernel_convolution(kernel, input_size, output_size, stride=(1, 1)):

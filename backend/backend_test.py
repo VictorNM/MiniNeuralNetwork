@@ -26,6 +26,19 @@ class ActivationTest(unittest.TestCase):
 
         np.testing.assert_almost_equal(expected, actual)
 
+    def test_softmax(self):
+        x = np.array([
+            [10000, 1, 1],
+            [1, 10000, 1]
+        ])
+        expected = np.array([
+            [1, 0, 0],
+            [0, 1, 0]
+        ])
+        actual = K.softmax(x)
+
+        np.testing.assert_almost_equal(expected, actual)
+
 
 class LossTest(unittest.TestCase):
     def test_mse_scalar(self):
@@ -57,6 +70,22 @@ class LossTest(unittest.TestCase):
         actual = K.mean_square_error(y, y_hat)
 
         np.testing.assert_equal(expected, actual)
+
+    def test_categorical_crossentropy(self):
+        y = np.array([
+            [1, 0, 0],
+            [0, 1, 1],
+            [1, 0, 0]
+        ])
+        y_hat = np.array([
+            [2413123, 1232, 2],
+            [1321, 1012323, 123213],
+            [3413231, 12312343, 231]
+        ])
+        actual = K.categorical_crossentropy(y, y_hat)
+        d_actual = K.categorical_crossentropy_derivative(y, y_hat)
+        print(actual)
+        print(d_actual)
 
 
 class ConvTest(unittest.TestCase):

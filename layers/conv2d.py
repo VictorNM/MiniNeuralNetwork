@@ -10,7 +10,6 @@ from utils.conv_utils import compute_output_shape
 
 class Conv2D(Layer):
     def __init__(self,
-                 input_shape,
                  num_kernel,
                  kernel_size,
                  stride=(1,1),
@@ -18,7 +17,8 @@ class Conv2D(Layer):
                  activation=None,
                  use_bias=True,
                  kernel_initializer='random_normal',
-                 bias_initializer='zeros'):
+                 bias_initializer='zeros',
+                 input_shape=None):
 
         assert isinstance(kernel_size, tuple) and len(kernel_size) == 2
         assert isinstance(stride, tuple) and len(stride) == 2
@@ -35,19 +35,24 @@ class Conv2D(Layer):
         self.kernel_initializer = initializers.get(kernel_initializer)
         self.bias_initializer = initializers.get(bias_initializer)
 
-        self.kernel = None
+        self.kernels = None
         self.cache = dict()
         self.built = False
 
-    def build(self):
+    def build(self, inputs_shape):
+        assert len(inputs_shape) == 4
+
+        self.input_shape = inputs_shape[1:]
+
         num_channel = self.input_shape[-1]
-        kernel_shape = (self.num_kernel, ) + self.kernel_size + (num_channel, )
-        self.kernel = self.kernel_initializer(kernel_shape)
+        kernels_shape = (self.num_kernel, ) + self.kernel_size + (num_channel, )
+        self.kernels = self.kernel_initializer(kernels_shape)
+
         self.built = True
 
-    def compute_output_shape(self, input_shape):
-        kernel_shape = (self.num_kernel, ) + self.kernel_size + (input_shape[-1], )
-        return compute_output_shape(input_shape, kernel_shape, self.stride, self.padding)
+    def compute_outputs_shape(self, input_shape):
+        kernels_shape = (self.num_kernel, ) + self.kernel_size + (input_shape[-1], )
+        return compute_output_shape(input_shape, kernels_shape, self.stride, self.padding)
 
     def forward(self, inputs):
         """
@@ -67,27 +72,23 @@ class Conv2D(Layer):
 
         return outputs
 
-    def backward(self, delta_outputs):
-
+    def backward(self, delta_outputs, learning_rate):
         if self.activation is not None:
-            delta_outputs = self.activation.backward(delta_outputs)['delta_inputs']
+            delta_outputs = self.activation.backward(delta_outputs)
 
         delta_kernels = self._compute_delta_kernels(delta_outputs)
         delta_inputs = self._compute_delta_inputs(delta_outputs)
 
-        return {
-            'delta_kernels': delta_kernels,
-            'delta_inputs': delta_inputs
-        }
+        # update params
+        self.kernels -= delta_kernels * learning_rate
 
-    def update_params(self, adjustment, learning_rate):
-        self.kernel -= adjustment['delta_kernels'] * learning_rate
+        return delta_inputs
 
     def _conv2d(self, inputs):
         input_shape = K.shape(inputs)
         num_input = input_shape[0]
 
-        output_shape = self.compute_output_shape(input_shape)
+        output_shape = self.compute_outputs_shape(input_shape)
         output_size = output_shape[1:-1]
 
         # pad input
@@ -99,7 +100,7 @@ class Conv2D(Layer):
         # compute outputs
         outputs = K.empty(output_shape)
         for i in range(num_input):
-            outputs[i] = K.compute_multi_channel_output(input_convolutions[i], self.kernel, output_size)
+            outputs[i] = K.compute_multi_channel_output(input_convolutions[i], self.kernels, output_size)
 
         # save cache for backward
         self.cache['inputs'] = inputs
@@ -130,7 +131,7 @@ class Conv2D(Layer):
         num_input = outputs_shape[0]
         input_size = self.input_shape[0:-1]
         inputs_shape = (num_input, ) + self.input_shape
-        kernel_convolutions = K.compute_kernel_convolutions(self.kernel, input_size, outputs_shape[1:-1])
+        kernel_convolutions = K.compute_kernel_convolutions(self.kernels, input_size, outputs_shape[1:-1])
 
         delta_inputs = K.empty(inputs_shape)
         for i in range(num_input):

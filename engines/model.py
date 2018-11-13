@@ -1,3 +1,5 @@
+import logging
+
 import backend as K
 from layers.base import Layer
 from ops import losses
@@ -10,36 +12,45 @@ class Model:
 
         self._layers = None
         self._is_compiled = False
+        self._built = False
 
         if isinstance(layers, list):
             for layer in layers:
                 self.add(layer)
 
-    def fit(self, X, y, n_epochs=2000, learning_rate=0.001):
+    def fit(self, x, y, n_epochs=2000, learning_rate=0.001):
         if not self._is_compiled:
             raise RuntimeError("You have to compile the model before use it!")
 
+        if not self._built:
+            self.build(K.shape(x))
+
         for epoch in range(n_epochs):
-            y_hat = self._do_forward(X)
+            y_hat = self._do_forward(x)
             self.training_outputs = y_hat
 
-            loss = self._loss_function(y, y_hat)
-            if epoch % 1000 == 0:
-                print("Loss at epochs %d: %f" %(epoch, loss))
+            self.loss = self._loss_function(y, y_hat)
+            if epoch % 1 == 0:
+                print("Loss at epochs %d: %f" %(epoch, self.loss))
 
-            adjustments = self._do_backward(y)
-            self.update_params(adjustments, learning_rate)
+            self._do_backward(y, learning_rate)
 
     def predict(self, X):
         o = self._do_forward(X)
 
         return K.argmax(o, axis=1)
 
-    def compile(self, loss=None):
+    def build(self, input_shape):
+        shape = input_shape
         for layer in self._layers:
-            layer.build()
+            layer.build(shape)
+            shape = layer.compute_outputs_shape(shape)
 
+        self._built = True
+
+    def compile(self, loss=None):
         self._loss_function = losses.get(loss)
+        self._loss_function_derivative = losses.get_derivative(loss)
         self._is_compiled = True
 
     def add(self, layer):
@@ -58,21 +69,12 @@ class Model:
 
         return o
 
-    def _do_backward(self, y):
-        adjustments = list()
-
+    def _do_backward(self, y, learning_rate):
         for i in reversed(range(len(self._layers))):
             layer = self._layers[i]
             if layer is self._layers[-1]:
-                delta_y = self.training_outputs - y
+                delta_y = self._loss_function_derivative(y, self.training_outputs)
             else:
-                delta_y = backward_output['delta_inputs']
+                delta_y = delta_x
 
-            backward_output = layer.backward(delta_y)
-            adjustments.insert(0, backward_output)
-
-        return adjustments
-
-    def update_params(self, adjustments, learning_rate):
-        for i, layer in enumerate(self._layers):
-            layer.update_params(adjustments[i], learning_rate)
+            delta_x = layer.backward(delta_y, learning_rate)

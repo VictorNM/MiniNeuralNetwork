@@ -6,7 +6,7 @@ from ops.activations import *
 
 class MyTestCase(unittest.TestCase):
     def test_forward(self):
-        layer = Dense(3, 2, 'sigmoid')
+        layer = Dense(2, 'sigmoid', input_shape=(3,))
 
         # change random kernels to a fixed kernels
         layer.kernels = np.array([
@@ -23,7 +23,7 @@ class MyTestCase(unittest.TestCase):
 
 
     def test_forward_without_activation(self):
-        layer = Dense(3, 2, use_bias=False)
+        layer = Dense(2, use_bias=False, input_shape=(3,))
 
         # change random kernels to a fixed kernels
         layer.kernels = np.array([
@@ -38,9 +38,21 @@ class MyTestCase(unittest.TestCase):
 
         np.testing.assert_array_equal(expected, actual)
 
-    def test_forward_with_bias(self):
-        layer = Dense(3, 2, use_bias=True)
-        pass
+    def test_should_build_successfully(self):
+        layer = Dense(units=2)
+        layer.build((1, 3))
+
+        kernels_shape = np.shape(layer.kernels)
+
+        self.assertTupleEqual(kernels_shape, (3, 2))
+
+    def test_should_build_successfully_for_3d_input(self):
+        layer = Dense(units=2)
+        layer.build((1, 3, 2))
+
+        kernels_shape = np.shape(layer.kernels)
+
+        self.assertTupleEqual(kernels_shape, (6, 2))
 
 if __name__ == '__main__':
     unittest.main()

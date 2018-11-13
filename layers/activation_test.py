@@ -9,7 +9,7 @@ class TestActivation(unittest.TestCase):
         x = np.array([-5.5, 2.4, -0.5, 3.6])
         y = layer.forward(x)
         delta_y = np.array([-1.2, 1.7, 0.5, -2.6])
-        delta_x = layer.backward(delta_y)['delta_inputs']
+        delta_x = layer.backward(delta_y)
 
         np.testing.assert_array_equal(delta_x, np.array([0, 1.7, 0, -2.6]))
 
