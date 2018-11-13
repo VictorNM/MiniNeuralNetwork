@@ -43,25 +43,26 @@ def train_with_keras(X_train, X_test, y_train, y_test):
 
 def train_with_my_model(X_train, X_test, y_train, y_test):
     layers = [
-        Dense(4, 7, 'sigmoid', use_bias=False),
-        Dense(7, 7, 'sigmoid', use_bias=True),
-        Dense(7, 3, 'tanh', use_bias=False)
+        Dense(units=7, activation='sigmoid', use_bias=False, input_shape=(4,)),
+        Dense(units=7, activation='tanh', use_bias=True),
+        Dense(units=3, use_bias=False)
     ]
 
     model = Model(layers)
-    one_hot_targets = np.eye(3)[y_train]
-    model.fit(X_train, one_hot_targets, n_epochs=20000, learning_rate=0.02)
+    model.compile(loss='categorical_crossentropy')
+    one_hot_targets = to_categorical(y_train, num_classes=3)
+    model.fit(X_train, one_hot_targets, n_epochs=20000, learning_rate=0.005)
 
     my_pred = model.predict(X_test)
     print("My accuracy score:", accuracy_score(y_test, my_pred))
 
 
 def main():
-    np.random.seed(7)
+    np.random.seed(1)
 
     X_train, X_test, y_train, y_test = prepare_datasets()
 
-    train_with_sklearn(X_train, X_test, y_train, y_test)
+    # train_with_sklearn(X_train, X_test, y_train, y_test)
 
     # train_with_keras(X_train, X_test, y_train, y_test)
 

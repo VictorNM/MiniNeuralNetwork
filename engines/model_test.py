@@ -2,169 +2,143 @@ import unittest
 import numpy as np
 
 from layers.dense import Dense
+from layers.conv2d import Conv2D
+from layers.flatten import Flatten
 from engines.model import Model
-from ops.activations import *
+from utils import train_utils
+
+from keras.datasets import mnist
+from sklearn.metrics import accuracy_score
 
 
 class TestModel(unittest.TestCase):
-    def test_backward_one_layer_without_bias(self):
-        y = np.array([
-            [1, 0]
-        ])
+    def test_can_not_fit_if_was_not_compiled(self):
+        nn = Model([Dense(units=1)])
+        with self.assertRaises(RuntimeError) as cm:
+            nn.fit([1,2], 1)
 
-        y_hat = np.array([
-            [0.98, 0.1]
-        ])
+        self.assertTrue(isinstance(cm.exception, RuntimeError))
 
+    def test_must_fail_if_layers_is_not_a_list(self):
+        with self.assertRaises(RuntimeError) as cm:
+            Model("123")
+
+        self.assertTrue(isinstance(cm.exception, RuntimeError))
+
+    def test_must_fail_if_layers_contains_non_layer_objects(self):
+        with self.assertRaises(RuntimeError) as cm:
+            Model(["123"])
+
+        self.assertTrue(isinstance(cm.exception, RuntimeError))
+
+    def test_should_fail_if_add_non_layer_object(self):
+        nn = Model()
+        with self.assertRaises(RuntimeError) as cm:
+            nn.add('something')
+
+        self.assertTrue(isinstance(cm.exception, RuntimeError))
+
+    def test_model_should_work(self):
+        nn = Model([Dense(units=1)])
+        nn.compile('categorical_crossentropy')
         x = np.array([
-            [0.5, 0.2, 0.9]
+            [1, 2, 3]
         ])
+        y_one_hot = np.array([
+            [1]
+        ])
+        nn.fit(x, y_one_hot, n_epochs=1, learning_rate=0.001)
+        nn.predict(x)
 
-        w = np.array([
-            [1, 2],
-            [3, 4],
-            [5, 6]
-        ])
+    def test_model_with_conv2d_should_work(self):
+        nn = Model([Conv2D(input_shape=(3, 3, 1), num_kernel=1, kernel_size=(3,3))])
+        nn.compile(loss='mean_squared_error')
+        x = np.zeros((1, 3, 3, 1))
+        y = np.ones((1, 1, 1, 1))
+        nn.fit(x, y, n_epochs=1)
 
-        layer = Dense(3, 2, activation='sigmoid', use_bias=False)
-        layer.cache = x
-        layer.weight = w
-        layer.outputs = y_hat
-        layers = [
-            layer
-        ]
+    def test_combine_layers_should_work(self):
+        nn = Model([
+            Conv2D(input_shape=(6, 4, 1), num_kernel=3, kernel_size=(3, 3), use_bias=False, kernel_initializer='zeros'),
+            Flatten(),
+            Dense(units=2, use_bias=False)
+        ])
+        nn.compile(loss='categorical_crossentropy')
+        x0 = np.array([
+            [0, 1, 1, 0],
+            [1, 0, 0, 1],
+            [1, 0, 0, 1],
+            [1, 0, 0, 1],
+            [1, 0, 0, 1],
+            [0, 1, 1, 0]
+        ]).reshape((6, 4, 1))
+        x1 = np.array([
+            [0, 0, 1, 1],
+            [0, 1, 1, 1],
+            [1, 0, 1, 1],
+            [0, 0, 1, 1],
+            [0, 0, 1, 1],
+            [0, 0, 1, 1]
+        ]).reshape((6, 4, 1))
+        x = np.array([x0, x1])
+        y = [0, 1]
+        nn.fit(x, train_utils.to_categorical(y, 2), n_epochs=100, learning_rate=0.001)
 
-        model = Model(layers)
-        actual = [adjustment['delta_weight'] for adjustment in model.do_backward(y)]
-        expected = np.array([[
-            [-1.960e-04, 4.500e-03],
-            [-7.840e-05, 1.800e-03],
-            [-3.528e-04, 8.100e-03]
-        ]])
-        np.testing.assert_almost_equal(expected, actual)
+        x0_test = np.array([
+            [1, 1, 1, 0],
+            [1, 0, 0, 1],
+            [1, 0, 0, 1],
+            [1, 0, 0, 1],
+            [1, 0, 0, 1],
+            [0, 1, 1, 0]
+        ]).reshape((6, 4, 1))
+        x_test = np.array([x0_test])
+        pred = nn.predict(x_test)
+        print(pred)
 
-    def test_backward_two_layer_without_bias(self):
-        # layer 1
-        layer_1 = Dense(3, 2, activation='sigmoid', use_bias=False)
-        layer_1.weight = np.array([
-            [1, 2],
-            [3, 4],
-            [5, 6]
-        ])
-        layer_1.cache = np.array([
-            [0.5, 0.2, 0.9]
-        ])
-        layer_1.outputs = np.array([
-            [0.4, 0.9]
-        ])
+    def test_with_small_mnist(self):
+        num_classes = 10
+        epochs = 12
 
-        # layer 2
-        layer_2 = Dense(2, 2, activation='sigmoid', use_bias=False)
-        layer_2.weight = np.array([
-            [2, 5],
-            [3, 4]
-        ])
-        layer_2.cache = np.array([
-            [0.4, 0.9]
-        ])
-        layer_2.outputs = y_hat = np.array([
-            [0.98, 0.1]
-        ])
+        # input image dimensions
+        img_rows, img_cols, num_channels = 28, 28, 1
+        input_shape = (img_rows, img_cols, num_channels)
 
-        # define network
-        layers = [layer_1, layer_2]
-        model = Model(layers)
+        # load data
+        (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
-        y = np.array([
-            [1, 0]
-        ])
+        # reduce samples
+        num_train_samples = 100
+        x_train = x_train[:num_train_samples]
+        y_train = y_train[:num_train_samples]
 
-        actual = [adjustment['delta_weight'] for adjustment in model.do_backward(y)]
-        expected = [
-            np.array([
-                [0.00530592, 0.00156708],
-                [0.00212237, 0.00062683],
-                [0.00955066, 0.00282074]
-            ]),
-            np.array([
-                [-0.0001568, 0.0036],
-                [-0.0003528, 0.0081]
-            ])
-        ]
-        for i in range(len(actual)):
-            np.testing.assert_almost_equal(expected[i], actual[i])
+        num_test_samples = int(0.3 * num_train_samples)
+        x_test = x_test[:num_test_samples]
+        y_test = y_test[:num_test_samples]
 
-    def test_backward_three_layers_without_bias(self):
+        x_train = x_train.reshape(x_train.shape[0], img_rows, img_cols, 1)
+        x_test = x_test.reshape(x_test.shape[0], img_rows, img_cols, 1)
 
-        # define layer 1
-        layer_1 = Dense(3, 3, activation='sigmoid', use_bias=False)
-        layer_1.weight = np.array([
-            [1, 2, 2],
-            [3, 4, 2],
-            [5, 6, 2]
-        ])
-        layer_1.cache = np.array([
-            [0.5, 0.2, 0.9]
-        ])
-        layer_1.outputs = np.array([
-            [0.4, 0.9, 1.0]
-        ])
+        # normalize
+        x_train = x_train.astype('float32')
+        x_test = x_test.astype('float32')
+        x_train /= 255
+        x_test /= 255
 
-        # define layer 2
-        layer_2 = Dense(3, 2, activation='sigmoid', use_bias=False)
-        layer_2.weight = np.array([
-            [2, 5],
-            [3, 4],
-            [1, 4]
-        ])
-        layer_2.cache = np.array([
-            [0.4, 0.9, 1.0]
-        ])
-        layer_2.outputs = np.array([
-            [0.98, 0.1]
-        ])
+        y_train = train_utils.to_categorical(y_train, num_classes)
 
-        # define layer 3
-        layer_3 = Dense(2, 3, activation='sigmoid', use_bias=False)
-        layer_3.weight = np.array([
-            [0.5, 2.0, 1.0],
-            [1.0, 4.1, 2.8]
-        ])
-        layer_3.cache = np.array([
-            [0.98, 0.1]
-        ])
-        layer_3.outputs = np.array([
-            [1.1, 2.2, 3.3]
-        ])
+        model = Model()
+        model.add(Conv2D(num_kernel=5, kernel_size=(3, 3), activation='relu', use_bias=False, kernel_initializer='zeros'))
+        model.add(Flatten())
+        model.add(Dense(units=num_classes, kernel_initializer='zeros', activation='sigmoid'))
 
-        # define y
-        y = np.array([
-            [1.1, 2.4, 2.9]
-        ])
+        model.compile(loss='categorical_crossentropy')
+        model.fit(x_train, y_train, n_epochs=epochs, learning_rate=0.001)
 
+        pred = model.predict(x_test)
+        acc = accuracy_score(y_test, pred)
+        print(acc)
 
-        # define network
-        layers = [layer_1, layer_2, layer_3]
-        model = Model(layers)
-        actual = [adjustment['delta_weight'] for adjustment in model.do_backward(y)]
-        expected = [
-            np.array([
-                [-0.35145792, -0.10788228, 0.],
-                [-0.14058317, -0.04315291, 0.],
-                [-0.63262426, -0.1941881,  0.]
-            ]),
-            np.array([
-                [-0.0155232, -0.228096],
-                [-0.0349272, -0.513216],
-                [-0.038808, -0.57024]
-            ]),
-            np.array([
-                [0., 0.51744, -2.97528],
-                [0., 0.0528, -0.3036]
-            ])
-        ]
-        for i in range(len(actual)):
-            np.testing.assert_almost_equal(expected[i], actual[i])
 
 if __name__ == '__main__':
     unittest.main()

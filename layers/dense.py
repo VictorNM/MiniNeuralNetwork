@@ -1,47 +1,85 @@
-from layers import *
-from ops import activations
+from layers.base import Layer
+from layers.activation import Activation
+from layers._layers import *
 
 
 class Dense(Layer):
-    def __init__(self, n_in, n_out, activation=None, use_bias=True):
-        self.weight = K.random(n_in, n_out)
+    def __init__(self, units,
+                 activation=None,
+                 use_bias=True,
+                 kernel_initializer='random_normal',
+                 bias_initializer='zeros',
+                 input_shape=None):
+
+        if input_shape:
+            self.input_shape = input_shape
+        else:
+            self.input_shape = None
+
+        self.units = units
         self.use_bias = use_bias
+        self.kernel_initializer = initializers.get(kernel_initializer)
+        self.bias_initializer = initializers.get(bias_initializer)
         if use_bias:
-            self.bias = K.zeros((1, n_out))
+            self.bias = initializers.zeros((1, units))
 
-        self.activation = None
-        self.activation_derivative = None
+        self.activation = Activation(activation)
 
-        self.activation, self.activation_derivative = activations.get(activation)
+        self.cache = dict()
+        self.built = False
 
-        self.cache = None
-        self.outputs = None
+    def build(self, inputs_shape):
+        assert len(inputs_shape) >= 2
+        self.input_shape = inputs_shape[1:]
 
-    def forward(self, x):
-        self.cache = x
-        linear_output = K.dot(x, self.weight)
+        input_shape_flatten = 1
+        for i in range(len(self.input_shape)):
+            input_shape_flatten *= self.input_shape[i]
+
+        self.kernels = self.kernel_initializer((input_shape_flatten, self.units))
+        if self.use_bias:
+            self.bias = self.bias_initializer((1, self.units))
+        else:
+            self.bias = None
+
+        self.built = True
+
+    def forward(self, inputs):
+        self.cache['inputs'] = inputs
+        outputs = K.dot(inputs, self.kernels)
 
         if self.use_bias:
-            linear_output += self.bias
+            outputs += self.bias
 
-        if self.activation is None:
-            self.outputs = linear_output
+        if self.activation is not None:
+            outputs = self.activation.forward(outputs)
+
+        return outputs
+
+    def backward(self, delta_outputs, learning_rate):
+        inputs = self.cache['inputs']
+
+        if self.activation is not None:
+            delta_activation = self.activation.backward(delta_outputs)
         else:
-            self.outputs = self.activation(linear_output)
-        return self.outputs
+            delta_activation = delta_outputs
 
-    def backward(self, delta_y):
-        if self.activation_derivative is not None:
-            e = delta_y * self.activation_derivative(self.outputs)
-        else:
-            e = delta_y
+        delta_weight = K.dot(K.transpose(inputs), delta_activation)
+        self.kernels -= delta_weight * learning_rate
 
-        delta_weight = K.dot(self.cache.T, e)
-        delta_bias = K.ones(len(delta_y)).dot(e)
+        if self.bias is not None:
+            delta_bias = K.ones(len(delta_outputs)).dot(delta_activation)
+            self.bias -= delta_bias * learning_rate
 
-        return e, delta_weight, delta_bias
+        delta_inputs = K.dot(delta_activation, K.transpose(self.kernels))
 
-    def update_params(self, adjustment, learning_rate):
-        self.weight -= adjustment['delta_weight'] * learning_rate
-        if self.use_bias:
-            self.bias -= adjustment['delta_bias'] * learning_rate
+        return delta_inputs
+
+    def compute_outputs_shape(self, inputs_shape):
+        assert len(inputs_shape) >= 2
+        assert inputs_shape[-1]
+
+        outputs_shape = list(inputs_shape)
+        outputs_shape[-1] = self.units
+
+        return tuple(outputs_shape)
