@@ -6,6 +6,7 @@ from sklearn import preprocessing
 from sklearn.metrics import accuracy_score
 from sklearn.neural_network import MLPClassifier
 
+import keras
 from keras.models import Sequential
 from keras.layers import Dense as KerasDense
 from keras.utils import to_categorical
@@ -13,6 +14,9 @@ from keras.utils import to_categorical
 from layers import Dense
 from engines.model import Model
 
+
+epochs = 10000
+learning_rate = 0.001
 
 def prepare_datasets():
     X, y = load_iris(True)
@@ -33,11 +37,15 @@ def train_with_keras(X_train, X_test, y_train, y_test):
         KerasDense(units=7, activation='sigmoid'),
         KerasDense(units=3, activation='sigmoid')
     ])
-    keras_model.compile(optimizer='sgd', loss='categorical_crossentropy', metrics=['accuracy'])
+    keras_model.compile(
+        optimizer=keras.optimizers.SGD(lr=learning_rate),
+        loss='categorical_crossentropy',
+        metrics=['accuracy'])
     one_hot_labels = to_categorical(y_train, num_classes=3)
-    keras_model.fit(X_train, one_hot_labels, epochs=10000, verbose=0)
+    keras_model.fit(X_train, one_hot_labels, epochs=epochs, verbose=0)
 
-    _, acc = keras_model.evaluate(X_test, to_categorical(y_test, num_classes=3))
+    loss, acc = keras_model.evaluate(X_test, to_categorical(y_test, num_classes=3))
+    print("Keras loss:", loss)
     print("Keras accuracy:", acc)
 
 
@@ -51,7 +59,7 @@ def train_with_my_model(X_train, X_test, y_train, y_test):
     model = Model(layers)
     model.compile(loss='categorical_crossentropy')
     one_hot_targets = to_categorical(y_train, num_classes=3)
-    model.fit(X_train, one_hot_targets, n_epochs=20000, learning_rate=0.005)
+    model.fit(X_train, one_hot_targets, n_epochs=epochs, learning_rate=learning_rate)
 
     my_pred = model.predict(X_test)
     print("My accuracy score:", accuracy_score(y_test, my_pred))
@@ -64,7 +72,7 @@ def main():
 
     # train_with_sklearn(X_train, X_test, y_train, y_test)
 
-    # train_with_keras(X_train, X_test, y_train, y_test)
+    train_with_keras(X_train, X_test, y_train, y_test)
 
     train_with_my_model(X_train, X_test, y_train, y_test)
 
