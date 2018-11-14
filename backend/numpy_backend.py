@@ -90,9 +90,9 @@ def d_relu(x):
 
 
 def softmax(x):
-    normalize_x = np.subtract(x, np.max(x, axis=1, keepdims=True))
+    normalize_x = np.subtract(x, np.max(x, axis=-1, keepdims=True))
     exp_x = exp(normalize_x)
-    return exp_x / sum(exp_x, axis=1)
+    return exp_x / sum(exp_x, axis=-1)
 
 # === loss ===
 
@@ -118,7 +118,7 @@ def categorical_crossentropy(y, y_hat, epsilon=1e-7):
     assert shape(y) == shape(y_hat)
     p = softmax(y_hat)
     p = np.clip(p, epsilon, 1.0 - epsilon)
-    return np.mean(np.sum(y * -np.log(p), axis=1, keepdims=True))
+    return np.mean(np.sum(y * -np.log(p), axis=-1, keepdims=True))
 
 
 def categorical_crossentropy_derivative(y, y_hat):

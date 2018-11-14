@@ -20,12 +20,6 @@ class ActivationTest(unittest.TestCase):
 
         np.testing.assert_array_almost_equal(expected, actual)
 
-    def test_d_sigmoid_of_two(self):
-        expected = -2
-        actual = K.d_sigmoid(2)
-
-        np.testing.assert_almost_equal(expected, actual)
-
     def test_softmax(self):
         x = np.array([
             [10000, 1, 1],
